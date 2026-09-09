@@ -35,6 +35,12 @@ export function Header() {
           >
             AI Stack
           </Link>
+          <Link
+            href="/test"
+            className="text-sm font-semibold text-slate-600 hover:text-brand-blue transition-colors"
+          >
+            Test
+          </Link>
 
           {/* <button className="px-4 py-2 text-sm font-semibold text-white bg-brand-blue rounded-lg hover:bg-brand-blue-dark transition-colors shadow-sm">
             Login
