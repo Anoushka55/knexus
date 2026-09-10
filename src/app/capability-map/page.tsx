@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowRight, Layers } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -36,6 +38,26 @@ export default function CapabilityMapPage() {
         </section>
 
         <MetricsRow metrics={solutionMetrics} source={solutionMetricsSource} />
+
+        <section className="max-w-7xl mx-auto px-6 pt-16 sm:pt-20">
+          <Link
+            href="/capability-map/ai-architecture"
+            className="group flex items-center justify-between gap-6 rounded-2xl border border-slate-200 bg-slate-50 p-6 hover:border-brand-blue hover:shadow-card-hover transition-all"
+          >
+            <div className="flex items-start gap-4">
+              <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand-blue">
+                <Layers className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-base font-bold text-slate-900">AI Architecture Accelerator</p>
+                <p className="mt-1 text-sm text-slate-500 leading-snug">
+                  Vendor-agnostic architecture, mapped by layer.
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-5 w-5 flex-shrink-0 text-slate-300 group-hover:text-brand-blue group-hover:translate-x-0.5 transition-all" />
+          </Link>
+        </section>
 
         <section className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
           <CapabilityMap />
