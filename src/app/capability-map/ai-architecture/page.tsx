@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { ArchitectureAccelerator } from "@/components/architecture/ArchitectureAccelerator";
+import { DecisionGraph } from "@/components/architecture/DecisionGraph";
 
 export default function AIArchitectureAcceleratorPage() {
   return (
@@ -30,16 +30,16 @@ export default function AIArchitectureAcceleratorPage() {
                 Vendor-agnostic architecture, mapped by layer
               </h1>
               <p className="text-lg text-slate-600 leading-relaxed">
-                Pick a transformation scenario, walk each layer of the stack, and see how a
-                Microsoft-native, SAP-anchored, or hybrid approach answers the same challenge —
-                hover any node to trace it, click to lock.
+                Filter by domain, then trace how a challenge connects through a capability to the
+                technology options and architecture patterns that address it — hover any node to
+                trace it, click to lock.
               </p>
             </div>
           </div>
         </section>
 
         <section className="max-w-7xl mx-auto px-6 py-16 sm:py-20">
-          <ArchitectureAccelerator />
+          <DecisionGraph />
         </section>
       </main>
       <Footer />
