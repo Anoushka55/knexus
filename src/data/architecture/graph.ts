@@ -111,32 +111,38 @@ export interface TechnologyOption {
   domainIds: DomainId[];
   capabilityIds: string[];
   note: string;
+  // Vendor licensing/consumption cost specifically — not total engineering
+  // effort. A "low" costTier option can still carry a "high" integration
+  // effort (see the open options throughout this file); the two are
+  // deliberately tracked separately and must not be conflated when reading
+  // this data.
+  costTier: Tier;
 }
 
 export const technologyOptions: TechnologyOption[] = [
-  { id: "kg-ms", label: "Azure Cosmos DB (Gremlin API) + Azure AI Search", ecosystem: "microsoft", domainIds: ["knowledge", "data"], capabilityIds: ["knowledge-graph"], note: "Managed graph store plus semantic search, fastest to stand up inside an existing Azure estate." },
-  { id: "kg-sap", label: "SAP Knowledge Graph engine (BTP)", ecosystem: "sap", domainIds: ["knowledge", "data"], capabilityIds: ["knowledge-graph"], note: "Natively understands the S/4HANA data model, no re-mapping needed." },
-  { id: "kg-open", label: "Open graph store (Neo4j / RDF triple store)", ecosystem: "open", domainIds: ["knowledge", "data"], capabilityIds: ["knowledge-graph"], note: "Portable if the ERP or cloud changes again later; more build effort up front." },
+  { id: "kg-ms", label: "Azure Cosmos DB (Gremlin API) + Azure AI Search", ecosystem: "microsoft", domainIds: ["knowledge", "data"], capabilityIds: ["knowledge-graph"], note: "Managed graph store plus semantic search, fastest to stand up inside an existing Azure estate.", costTier: "medium" },
+  { id: "kg-sap", label: "SAP Knowledge Graph engine (BTP)", ecosystem: "sap", domainIds: ["knowledge", "data"], capabilityIds: ["knowledge-graph"], note: "Natively understands the S/4HANA data model, no re-mapping needed.", costTier: "high" },
+  { id: "kg-open", label: "Open graph store (Neo4j / RDF triple store)", ecosystem: "open", domainIds: ["knowledge", "data"], capabilityIds: ["knowledge-graph"], note: "Portable if the ERP or cloud changes again later; more build effort up front.", costTier: "low" },
 
-  { id: "ds-ms", label: "Azure Synapse / Fabric OneLake", ecosystem: "microsoft", domainIds: ["data"], capabilityIds: ["enterprise-data-fabric"], note: "General-purpose virtualization layer, not ERP-aware by default." },
-  { id: "ds-sap", label: "SAP Datasphere", ecosystem: "sap", domainIds: ["data"], capabilityIds: ["enterprise-data-fabric"], note: "Virtualizes S/4HANA and BW data without physically moving it — a genuine native advantage." },
-  { id: "ds-open", label: "Open data virtualization (Trino/Presto-style federation)", ecosystem: "open", domainIds: ["data"], capabilityIds: ["enterprise-data-fabric"], note: "Trades native convenience for portability across sources." },
+  { id: "ds-ms", label: "Azure Synapse / Fabric OneLake", ecosystem: "microsoft", domainIds: ["data"], capabilityIds: ["enterprise-data-fabric"], note: "General-purpose virtualization layer, not ERP-aware by default.", costTier: "medium" },
+  { id: "ds-sap", label: "SAP Datasphere", ecosystem: "sap", domainIds: ["data"], capabilityIds: ["enterprise-data-fabric"], note: "Virtualizes S/4HANA and BW data without physically moving it — a genuine native advantage.", costTier: "high" },
+  { id: "ds-open", label: "Open data virtualization (Trino/Presto-style federation)", ecosystem: "open", domainIds: ["data"], capabilityIds: ["enterprise-data-fabric"], note: "Trades native convenience for portability across sources.", costTier: "medium" },
 
-  { id: "infra-ms", label: "Azure API Management + Azure infra-as-code", ecosystem: "microsoft", domainIds: ["infrastructure", "architecture-integration"], capabilityIds: ["portable-integration-backbone"], note: "Mature tooling, tightly integrated with the rest of an Azure estate." },
-  { id: "infra-sap", label: "SAP Integration Suite / BTP", ecosystem: "sap", domainIds: ["infrastructure", "architecture-integration"], capabilityIds: ["portable-integration-backbone"], note: "Natively aware of SAP endpoints, less useful for non-SAP integration." },
-  { id: "infra-open", label: "Open API gateway + cloud-agnostic infra-as-code", ecosystem: "open", domainIds: ["infrastructure", "architecture-integration"], capabilityIds: ["portable-integration-backbone"], note: "Neither the ERP nor the cloud becomes a hard dependency for anything built above it." },
+  { id: "infra-ms", label: "Azure API Management + Azure infra-as-code", ecosystem: "microsoft", domainIds: ["infrastructure", "architecture-integration"], capabilityIds: ["portable-integration-backbone"], note: "Mature tooling, tightly integrated with the rest of an Azure estate.", costTier: "medium" },
+  { id: "infra-sap", label: "SAP Integration Suite / BTP", ecosystem: "sap", domainIds: ["infrastructure", "architecture-integration"], capabilityIds: ["portable-integration-backbone"], note: "Natively aware of SAP endpoints, less useful for non-SAP integration.", costTier: "high" },
+  { id: "infra-open", label: "Open API gateway + cloud-agnostic infra-as-code", ecosystem: "open", domainIds: ["infrastructure", "architecture-integration"], capabilityIds: ["portable-integration-backbone"], note: "Neither the ERP nor the cloud becomes a hard dependency for anything built above it.", costTier: "low" },
 
-  { id: "model-ms", label: "Azure AI Foundry / Azure OpenAI + Azure ML fine-tuning", ecosystem: "microsoft", domainIds: ["models-ai"], capabilityIds: ["foundation-vs-slm"], note: "One control plane for both frontier and fine-tuned small models." },
-  { id: "model-sap", label: "SAP generative AI hub (Joule / AI Core)", ecosystem: "sap", domainIds: ["models-ai"], capabilityIds: ["foundation-vs-slm"], note: "Tightly integrated with SAP data, limited to SAP-blessed model choices." },
-  { id: "model-open", label: "Open-source SLMs, self-hosted", ecosystem: "open", domainIds: ["models-ai"], capabilityIds: ["foundation-vs-slm"], note: "Required wherever data residency rules out hosted options entirely." },
+  { id: "model-ms", label: "Azure AI Foundry / Azure OpenAI + Azure ML fine-tuning", ecosystem: "microsoft", domainIds: ["models-ai"], capabilityIds: ["foundation-vs-slm"], note: "One control plane for both frontier and fine-tuned small models.", costTier: "medium" },
+  { id: "model-sap", label: "SAP generative AI hub (Joule / AI Core)", ecosystem: "sap", domainIds: ["models-ai"], capabilityIds: ["foundation-vs-slm"], note: "Tightly integrated with SAP data, limited to SAP-blessed model choices.", costTier: "high" },
+  { id: "model-open", label: "Open-source SLMs, self-hosted", ecosystem: "open", domainIds: ["models-ai"], capabilityIds: ["foundation-vs-slm"], note: "Required wherever data residency rules out hosted options entirely.", costTier: "low" },
 
-  { id: "orch-ms", label: "Azure AI Foundry agent templates + Power Automate", ecosystem: "microsoft", domainIds: ["architecture-integration", "ai-engineering-ops"], capabilityIds: ["agentic-orchestration"], note: "Reusable templates across process types inside one platform." },
-  { id: "orch-sap", label: "SAP Build Process Automation + Joule agents", ecosystem: "sap", domainIds: ["architecture-integration", "ai-engineering-ops"], capabilityIds: ["agentic-orchestration"], note: "Fastest path for processes already fully inside SAP." },
-  { id: "orch-open", label: "Open, ERP-agnostic agent orchestration framework", ecosystem: "open", domainIds: ["architecture-integration", "ai-engineering-ops"], capabilityIds: ["agentic-orchestration"], note: "Same guardrails apply whether the next process is finance, procurement, or service." },
+  { id: "orch-ms", label: "Azure AI Foundry agent templates + Power Automate", ecosystem: "microsoft", domainIds: ["architecture-integration", "ai-engineering-ops"], capabilityIds: ["agentic-orchestration"], note: "Reusable templates across process types inside one platform.", costTier: "medium" },
+  { id: "orch-sap", label: "SAP Build Process Automation + Joule agents", ecosystem: "sap", domainIds: ["architecture-integration", "ai-engineering-ops"], capabilityIds: ["agentic-orchestration"], note: "Fastest path for processes already fully inside SAP.", costTier: "high" },
+  { id: "orch-open", label: "Open, ERP-agnostic agent orchestration framework", ecosystem: "open", domainIds: ["architecture-integration", "ai-engineering-ops"], capabilityIds: ["agentic-orchestration"], note: "Same guardrails apply whether the next process is finance, procurement, or service.", costTier: "medium" },
 
-  { id: "gov-ms", label: "Microsoft Entra ID + Purview", ecosystem: "microsoft", domainIds: ["security-governance"], capabilityIds: ["ai-governance-trust"], note: "Unified identity and lineage across Azure-connected systems." },
-  { id: "gov-sap", label: "SAP identity & governance suite", ecosystem: "sap", domainIds: ["security-governance"], capabilityIds: ["ai-governance-trust"], note: "Scoped to SAP-native workflows." },
-  { id: "gov-open", label: "Federated identity + open audit/lineage tooling", ecosystem: "open", domainIds: ["security-governance"], capabilityIds: ["ai-governance-trust"], note: "Rules defined once, enforced regardless of which system an agent touches." },
+  { id: "gov-ms", label: "Microsoft Entra ID + Purview", ecosystem: "microsoft", domainIds: ["security-governance"], capabilityIds: ["ai-governance-trust"], note: "Unified identity and lineage across Azure-connected systems.", costTier: "medium" },
+  { id: "gov-sap", label: "SAP identity & governance suite", ecosystem: "sap", domainIds: ["security-governance"], capabilityIds: ["ai-governance-trust"], note: "Scoped to SAP-native workflows.", costTier: "high" },
+  { id: "gov-open", label: "Federated identity + open audit/lineage tooling", ecosystem: "open", domainIds: ["security-governance"], capabilityIds: ["ai-governance-trust"], note: "Rules defined once, enforced regardless of which system an agent touches.", costTier: "medium" },
 ];
 
 export interface ArchitecturePattern {
@@ -173,11 +179,17 @@ export const architecturePatterns: ArchitecturePattern[] = [
   {
     id: "sap-plus-ms",
     label: "SAP-anchored with Microsoft AI",
-    domainIds: ["data", "architecture-integration", "models-ai", "security-governance"],
+    // infra-sap is an infrastructure-domain option in this pattern's
+    // techOptionIds — domainIds must include it or the Infrastructure
+    // filter incorrectly hides a pattern that belongs there.
+    domainIds: ["infrastructure", "data", "architecture-integration", "models-ai", "security-governance"],
     techOptionIds: ["kg-sap", "ds-sap", "infra-sap", "model-ms", "orch-sap", "gov-sap"],
     description: "SAP native for anything already ERP-aware, Microsoft layered on top specifically for the AI/model capability.",
     recommendedFor: ["enterprise-data-fabric"],
-    tco: "medium",
+    // SAP licensing spans infra, data, orchestration and governance here —
+    // not just the one capability where it's the clear technical winner —
+    // so this pattern carries the highest TCO of the four, not "medium".
+    tco: "high",
     tradeoffs: { capabilityFit: "high", complexity: "medium", portability: "low", vendorDependency: "high", scalability: "medium", integrationEffort: "medium" },
     rationale: "Wins specifically where SAP's native data and process awareness is a genuine technical advantage, not just convenience — the data-fabric capability is the clearest example.",
   },
@@ -201,6 +213,6 @@ export const architecturePatterns: ArchitecturePattern[] = [
     recommendedFor: ["knowledge-graph", "enterprise-data-fabric", "portable-integration-backbone", "foundation-vs-slm", "agentic-orchestration", "ai-governance-trust"],
     tco: "medium",
     tradeoffs: { capabilityFit: "high", complexity: "high", portability: "high", vendorDependency: "low", scalability: "high", integrationEffort: "high" },
-    rationale: "SAP Datasphere for the data fabric because that's a genuine native advantage, Microsoft for infrastructure and model hosting because that's the mature foundation, open technologies for knowledge graph, orchestration and governance because those are exactly the layers that have to survive whatever migration comes after this one. Higher integration effort than a single-vendor pattern, in exchange for materially lower vendor dependency and higher portability.",
+    rationale: "SAP Datasphere for the data fabric because that's a genuine native advantage, Microsoft for infrastructure and model hosting because that's the mature foundation, open technologies for knowledge graph, orchestration and governance because those are exactly the layers that have to survive whatever migration comes after this one. Higher integration effort than a single-vendor pattern, in exchange for materially lower vendor dependency and higher portability — and a lower total cost than sap-plus-ms despite similar capability fit, because it only pays SAP-tier pricing where SAP actually wins (the data fabric) rather than across infrastructure, orchestration and governance too.",
   },
 ];

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import { Star } from "lucide-react";
 import {
   architecturePatterns,
   capabilities,
@@ -57,8 +58,23 @@ const ECOSYSTEM_DOT: Record<Ecosystem, string> = {
   open: "bg-brand-green",
 };
 
+// Same three hues washed faint into a card background — additive to the dot,
+// not a replacement for it.
+const ECOSYSTEM_TINT: Record<Ecosystem, string> = {
+  microsoft: "bg-brand-blue/5",
+  sap: "bg-brand-violet/5",
+  open: "bg-brand-green/5",
+};
+
+// The recommendation badge gets its own accent, deliberately not one of the
+// three ecosystem colors — an amber "Recommended" badge must never read as
+// "this is a Microsoft/SAP/open thing."
+const RECOMMENDED_BADGE_CLASSES =
+  "bg-amber-50 border border-amber-200 text-amber-700";
+
 const TIER_LABEL: Record<Tier, string> = { low: "Low", medium: "Medium", high: "High" };
 const TIER_LEVEL: Record<Tier, number> = { low: 1, medium: 2, high: 3 };
+const COST_SYMBOL: Record<Tier, string> = { low: "$", medium: "$$", high: "$$$" };
 
 interface MapNode {
   ref: NodeRef;
@@ -68,6 +84,8 @@ interface MapNode {
   caption?: string;
   ecosystem?: Ecosystem;
   domainIds: DomainId[];
+  /** technologyOption.costTier for tech nodes, pattern.tco for pattern nodes. */
+  cost?: Tier;
 }
 
 // ---- the three typed edges, and the BFS that walks all of them ----
@@ -75,6 +93,19 @@ interface MapNode {
 const capabilityById = new Map(capabilities.map((c) => [c.id, c]));
 const techById = new Map(technologyOptions.map((t) => [t.id, t]));
 const patternById = new Map(architecturePatterns.map((p) => [p.id, p]));
+
+// A pattern blends ecosystems, so it never gets a single flat tint — instead
+// a small dot per distinct ecosystem among its own technology options.
+const patternEcosystems = new Map<string, Ecosystem[]>(
+  architecturePatterns.map((p) => [
+    p.id,
+    Array.from(
+      new Set(
+        p.techOptionIds.map((id) => techById.get(id)?.ecosystem).filter((e): e is Ecosystem => Boolean(e))
+      )
+    ),
+  ])
+);
 
 /**
  * Connected set reachable from `start`, walked across all three edge types —
@@ -257,6 +288,10 @@ export function DecisionGraph() {
   // ---- domain filter: multi-select chips, empty set = "All" ----
   const [selectedDomains, setSelectedDomains] = useState<Set<DomainId>>(new Set());
 
+  // ---- compare-all vs recommended-only: a display filter layered on top of
+  // the trace, same as the domain filter — it never touches the BFS itself.
+  const [compareMode, setCompareMode] = useState<"all" | "recommended">("all");
+
   function toggleDomain(id: DomainId) {
     setSelectedDomains((prev) => {
       const next = new Set(prev);
@@ -308,6 +343,7 @@ export function DecisionGraph() {
         caption: t.note,
         ecosystem: t.ecosystem,
         domainIds: t.domainIds,
+        cost: t.costTier,
       }));
 
     const patternNodes: MapNode[] = (architecturePatterns as ArchitecturePattern[])
@@ -319,6 +355,7 @@ export function DecisionGraph() {
         title: p.label,
         caption: p.description,
         domainIds: p.domainIds,
+        cost: p.tco,
       }));
 
     return [...challengeNodes, ...capabilityNodes, ...techNodes, ...patternNodes];
@@ -353,6 +390,26 @@ export function DecisionGraph() {
   const activeNode = activeId ? nodeById.get(activeId) ?? null : null;
   const activePattern =
     activeNode?.ref.kind === "pattern" ? patternById.get(activeNode.ref.id) ?? null : null;
+  const activeCapabilityId = activeNode?.ref.kind === "capability" ? activeNode.ref.id : null;
+
+  // The recommendation is only ever defined per-capability, so both the
+  // badge and the "Recommended only" filter are empty unless a Capability
+  // is the active node.
+  const { recommendedTechIds, recommendedPatternIds } = useMemo(() => {
+    const techIds = new Set<string>();
+    const patternIds = new Set<string>();
+    if (activeCapabilityId) {
+      for (const p of architecturePatterns) {
+        if (!p.recommendedFor.includes(activeCapabilityId)) continue;
+        patternIds.add(p.id);
+        const specificTech = technologyOptions.find(
+          (t) => p.techOptionIds.includes(t.id) && t.capabilityIds.includes(activeCapabilityId)
+        );
+        if (specificTech) techIds.add(specificTech.id);
+      }
+    }
+    return { recommendedTechIds: techIds, recommendedPatternIds: patternIds };
+  }, [activeCapabilityId]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -484,6 +541,35 @@ export function DecisionGraph() {
         ))}
       </div>
 
+      {/* ---- compare-all / recommended-only toggle ---- */}
+      <div className="flex items-center gap-2 mb-5">
+        <span className="text-xs font-bold uppercase tracking-wide text-slate-400">View</span>
+        <div className="inline-flex rounded-full border border-slate-200 p-0.5">
+          <button
+            type="button"
+            onClick={() => setCompareMode("all")}
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-semibold transition-colors",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue",
+              compareMode === "all" ? "bg-brand-blue text-white" : "text-slate-500 hover:text-slate-700"
+            )}
+          >
+            Compare all options
+          </button>
+          <button
+            type="button"
+            onClick={() => setCompareMode("recommended")}
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-semibold transition-colors",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue",
+              compareMode === "recommended" ? "bg-brand-blue text-white" : "text-slate-500 hover:text-slate-700"
+            )}
+          >
+            Recommended only
+          </button>
+        </div>
+      </div>
+
       <div className="flex items-center justify-between gap-4 mb-5">
         <p className="text-sm text-slate-500">
           {lockedId
@@ -517,93 +603,155 @@ export function DecisionGraph() {
             ))}
           </svg>
 
-          {columns.map((column) => (
-            <div
-              key={column.key}
-              className="flex flex-col lg:w-64 lg:flex-shrink-0 rounded-xl border border-slate-200 overflow-hidden lg:h-[600px]"
-            >
-              <div className="flex items-baseline justify-between gap-2 bg-brand-navy px-4 py-3 flex-shrink-0">
-                <p className="text-sm font-bold text-white">{COLUMN_LABELS[column.key]}</p>
-                <p className="text-xs font-semibold text-white/60 flex-shrink-0">{column.nodes.length}</p>
-              </div>
+          {columns.map((column) => {
+            // "Recommended only" narrows the tech-options and pattern
+            // columns to the specific option/pattern this capability
+            // recommends — a display filter layered after the trace, never
+            // touching the BFS or the underlying data.
+            const isFilterableColumn =
+              column.key === "technologyOptions" || column.key === "architecturePatterns";
+            const showRecommendedHint =
+              compareMode === "recommended" && isFilterableColumn && !activeCapabilityId;
+            const displayNodes =
+              compareMode === "recommended" && isFilterableColumn && activeCapabilityId
+                ? column.nodes.filter((n) =>
+                    column.key === "technologyOptions"
+                      ? recommendedTechIds.has(n.ref.id)
+                      : recommendedPatternIds.has(n.ref.id)
+                  )
+                : column.nodes;
 
-              <div className="flex-1 lg:overflow-y-auto bg-slate-50 p-3 space-y-2">
-                {column.nodes.map((node) => {
-                  const status: "active" | "dimmed" | "normal" = !activeId || !connectedIds
-                    ? "normal"
-                    : connectedIds.has(node.id)
-                      ? "active"
-                      : "dimmed";
+            return (
+              <div
+                key={column.key}
+                className="flex flex-col lg:w-64 lg:flex-shrink-0 rounded-xl border border-slate-200 overflow-hidden lg:h-[600px]"
+              >
+                <div className="flex items-baseline justify-between gap-2 bg-brand-navy px-4 py-3 flex-shrink-0">
+                  <p className="text-sm font-bold text-white">{COLUMN_LABELS[column.key]}</p>
+                  <p className="text-xs font-semibold text-white/60 flex-shrink-0">
+                    {displayNodes.length}
+                  </p>
+                </div>
 
-                  const showRecommendedBadge =
-                    node.ref.kind === "pattern" &&
-                    activeNode?.ref.kind === "capability" &&
-                    patternById.get(node.ref.id)?.recommendedFor.includes(activeNode.ref.id);
+                <div className="flex-1 lg:overflow-y-auto bg-slate-50 p-3 space-y-2">
+                  {showRecommendedHint ? (
+                    <p className="p-3 text-xs text-slate-400">
+                      Select a capability to see its recommended path.
+                    </p>
+                  ) : (
+                    <>
+                      {displayNodes.map((node) => {
+                        const status: "active" | "dimmed" | "normal" = !activeId || !connectedIds
+                          ? "normal"
+                          : connectedIds.has(node.id)
+                            ? "active"
+                            : "dimmed";
 
-                  return (
-                    <button
-                      key={node.id}
-                      ref={(el) => {
-                        if (el) nodeRefs.current.set(node.id, el);
-                        else nodeRefs.current.delete(node.id);
-                      }}
-                      type="button"
-                      aria-pressed={lockedId === node.id}
-                      onMouseEnter={() => handleHoverStart(node.id)}
-                      onMouseLeave={handleHoverEnd}
-                      onFocus={() => handleHoverStart(node.id)}
-                      onBlur={handleHoverEnd}
-                      onClick={() => handleNodeClick(node.id)}
-                      className={cn(
-                        "w-full text-left rounded-lg border bg-white p-3",
-                        "transition-[transform,box-shadow,border-color,background-color] duration-200 motion-reduce:transition-none",
-                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue",
-                        status === "active" &&
-                          (prefersReducedMotion
-                            ? "border-brand-blue bg-brand-soft"
-                            : "border-brand-blue shadow-card-hover scale-[1.02]"),
-                        status === "dimmed" &&
-                          (prefersReducedMotion
-                            ? "border-slate-100 bg-slate-50"
-                            : "border-slate-200 opacity-30"),
-                        status === "normal" && "border-slate-200"
-                      )}
-                    >
-                      <div className="flex items-start gap-2">
-                        {node.ecosystem && (
-                          <span
+                        const showRecommendedBadge =
+                          (node.ref.kind === "tech" && recommendedTechIds.has(node.ref.id)) ||
+                          (node.ref.kind === "pattern" && recommendedPatternIds.has(node.ref.id));
+
+                        // Ecosystem tint on tech cards is additive to the
+                        // existing dot, applied only at "normal" status —
+                        // the active/dimmed overrides below still win via
+                        // twMerge, same as the plain white background did.
+                        const baseBg =
+                          node.ref.kind === "tech" && node.ecosystem
+                            ? ECOSYSTEM_TINT[node.ecosystem]
+                            : "bg-white";
+
+                        return (
+                          <button
+                            key={node.id}
+                            ref={(el) => {
+                              if (el) nodeRefs.current.set(node.id, el);
+                              else nodeRefs.current.delete(node.id);
+                            }}
+                            type="button"
+                            aria-pressed={lockedId === node.id}
+                            onMouseEnter={() => handleHoverStart(node.id)}
+                            onMouseLeave={handleHoverEnd}
+                            onFocus={() => handleHoverStart(node.id)}
+                            onBlur={handleHoverEnd}
+                            onClick={() => handleNodeClick(node.id)}
                             className={cn(
-                              "mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full",
-                              ECOSYSTEM_DOT[node.ecosystem]
+                              "w-full text-left rounded-lg border p-3",
+                              baseBg,
+                              "transition-[transform,box-shadow,border-color,background-color] duration-200 motion-reduce:transition-none",
+                              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue",
+                              status === "active" &&
+                                (prefersReducedMotion
+                                  ? "border-brand-blue bg-brand-soft"
+                                  : "border-brand-blue shadow-card-hover scale-[1.02]"),
+                              status === "dimmed" &&
+                                (prefersReducedMotion
+                                  ? "border-slate-100 bg-slate-50"
+                                  : "border-slate-200 opacity-30"),
+                              status === "normal" && "border-slate-200"
                             )}
-                          />
-                        )}
-                        <div className="min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm font-semibold text-slate-900 leading-snug">
-                              {node.title}
-                            </p>
-                            {showRecommendedBadge && (
-                              <span className="flex-shrink-0 rounded-full bg-brand-green/10 px-2 py-0.5 text-[10px] font-bold text-brand-green">
-                                Recommended
-                              </span>
+                          >
+                            {node.ref.kind === "pattern" && (
+                              <div className="flex items-center gap-1 mb-1.5">
+                                {(patternEcosystems.get(node.ref.id) ?? []).map((eco) => (
+                                  <span
+                                    key={eco}
+                                    className={cn("h-1.5 w-1.5 rounded-full", ECOSYSTEM_DOT[eco])}
+                                  />
+                                ))}
+                              </div>
                             )}
-                          </div>
-                          {node.caption && (
-                            <p className="mt-1 text-xs text-slate-500 leading-snug">{node.caption}</p>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                            <div className="flex items-start gap-2">
+                              {node.ecosystem && (
+                                <span
+                                  className={cn(
+                                    "mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full",
+                                    ECOSYSTEM_DOT[node.ecosystem]
+                                  )}
+                                />
+                              )}
+                              <div className="min-w-0">
+                                <div className="flex items-start justify-between gap-2">
+                                  <p className="text-sm font-semibold text-slate-900 leading-snug">
+                                    {node.title}
+                                  </p>
+                                  {showRecommendedBadge && (
+                                    <span
+                                      className={cn(
+                                        "flex-shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+                                        RECOMMENDED_BADGE_CLASSES
+                                      )}
+                                    >
+                                      <Star className="h-2.5 w-2.5 fill-current" />
+                                      Recommended
+                                    </span>
+                                  )}
+                                </div>
+                                {node.caption && (
+                                  <p className="mt-1 text-xs text-slate-500 leading-snug">
+                                    {node.caption}
+                                  </p>
+                                )}
+                                {node.cost && (
+                                  <p className="mt-1 text-[10px] font-bold text-slate-400">
+                                    {node.ref.kind === "pattern" ? "TCO " : "Cost "}
+                                    {COST_SYMBOL[node.cost]}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
 
-                {column.nodes.length === 0 && (
-                  <p className="p-3 text-xs text-slate-400">No nodes for the selected domains.</p>
-                )}
+                      {displayNodes.length === 0 && (
+                        <p className="p-3 text-xs text-slate-400">No nodes for the selected domains.</p>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
