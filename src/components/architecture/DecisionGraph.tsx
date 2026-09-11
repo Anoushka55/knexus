@@ -390,26 +390,68 @@ export function DecisionGraph() {
   const activeNode = activeId ? nodeById.get(activeId) ?? null : null;
   const activePattern =
     activeNode?.ref.kind === "pattern" ? patternById.get(activeNode.ref.id) ?? null : null;
-  const activeCapabilityId = activeNode?.ref.kind === "capability" ? activeNode.ref.id : null;
 
-  // The recommendation is only ever defined per-capability, so both the
-  // badge and the "Recommended only" filter are empty unless a Capability
-  // is the active node.
-  const { recommendedTechIds, recommendedPatternIds } = useMemo(() => {
-    const techIds = new Set<string>();
-    const patternIds = new Set<string>();
-    if (activeCapabilityId) {
-      for (const p of architecturePatterns) {
-        if (!p.recommendedFor.includes(activeCapabilityId)) continue;
-        patternIds.add(p.id);
-        const specificTech = technologyOptions.find(
-          (t) => p.techOptionIds.includes(t.id) && t.capabilityIds.includes(activeCapabilityId)
-        );
-        if (specificTech) techIds.add(specificTech.id);
+  // Recommendations are only ever defined per-capability, but the trace
+  // already resolves a Challenge, a Technology option or a Pattern down to
+  // the Capability (or capabilities) behind it — connectedIds is the exact
+  // same set used to render active/dimmed status. Reading it here, rather
+  // than only trusting a literal Capability click, is what makes
+  // "Recommended only" (and the badges) work identically from any of the
+  // four entry points instead of just one.
+  const contextCapabilityIds = useMemo(() => {
+    if (!connectedIds) return [] as string[];
+    const ids: string[] = [];
+    connectedIds.forEach((key) => {
+      const n = nodeById.get(key);
+      if (n?.ref.kind === "capability") ids.push(n.ref.id);
+    });
+    return ids;
+  }, [connectedIds, nodeById]);
+
+  // More than one context capability happens when a Challenge (or,
+  // transitively, a Technology option or Pattern) connects to more than
+  // one Capability — each recommended item then needs a caption saying
+  // which capability it's the pick for, so the union doesn't look like an
+  // unfiltered list.
+  const showRecommendationCaptions = contextCapabilityIds.length > 1;
+
+  const { recommendedTechIds, recommendedPatternIds, recommendedByTech, recommendedByPattern } =
+    useMemo(() => {
+      const techIds = new Set<string>();
+      const patternIds = new Set<string>();
+      // Sets, not arrays: the same capability can route to the same tech
+      // option through more than one recommending pattern (enterprise-
+      // data-fabric -> ds-sap via both sap-plus-ms and composable) — the
+      // caption must name that capability once, not once per pattern.
+      const byTech = new Map<string, Set<string>>();
+      const byPattern = new Map<string, Set<string>>();
+
+      for (const capId of contextCapabilityIds) {
+        const capLabel = capabilityById.get(capId)?.label ?? capId;
+        for (const p of architecturePatterns) {
+          if (!p.recommendedFor.includes(capId)) continue;
+          patternIds.add(p.id);
+          if (!byPattern.has(p.id)) byPattern.set(p.id, new Set());
+          byPattern.get(p.id)!.add(capLabel);
+
+          const specificTech = technologyOptions.find(
+            (t) => p.techOptionIds.includes(t.id) && t.capabilityIds.includes(capId)
+          );
+          if (specificTech) {
+            techIds.add(specificTech.id);
+            if (!byTech.has(specificTech.id)) byTech.set(specificTech.id, new Set());
+            byTech.get(specificTech.id)!.add(capLabel);
+          }
+        }
       }
-    }
-    return { recommendedTechIds: techIds, recommendedPatternIds: patternIds };
-  }, [activeCapabilityId]);
+
+      return {
+        recommendedTechIds: techIds,
+        recommendedPatternIds: patternIds,
+        recommendedByTech: byTech,
+        recommendedByPattern: byPattern,
+      };
+    }, [contextCapabilityIds]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -610,10 +652,11 @@ export function DecisionGraph() {
             // touching the BFS or the underlying data.
             const isFilterableColumn =
               column.key === "technologyOptions" || column.key === "architecturePatterns";
+            const hasContextCapability = contextCapabilityIds.length > 0;
             const showRecommendedHint =
-              compareMode === "recommended" && isFilterableColumn && !activeCapabilityId;
+              compareMode === "recommended" && isFilterableColumn && !hasContextCapability;
             const displayNodes =
-              compareMode === "recommended" && isFilterableColumn && activeCapabilityId
+              compareMode === "recommended" && isFilterableColumn && hasContextCapability
                 ? column.nodes.filter((n) =>
                     column.key === "technologyOptions"
                       ? recommendedTechIds.has(n.ref.id)
@@ -650,6 +693,17 @@ export function DecisionGraph() {
                         const showRecommendedBadge =
                           (node.ref.kind === "tech" && recommendedTechIds.has(node.ref.id)) ||
                           (node.ref.kind === "pattern" && recommendedPatternIds.has(node.ref.id));
+
+                        const recommendationCaptionSet = showRecommendationCaptions
+                          ? node.ref.kind === "tech"
+                            ? recommendedByTech.get(node.ref.id)
+                            : node.ref.kind === "pattern"
+                              ? recommendedByPattern.get(node.ref.id)
+                              : undefined
+                          : undefined;
+                        const recommendationCaption = recommendationCaptionSet
+                          ? Array.from(recommendationCaptionSet)
+                          : undefined;
 
                         // Ecosystem tint on tech cards is additive to the
                         // existing dot, applied only at "normal" status —
@@ -735,6 +789,11 @@ export function DecisionGraph() {
                                   <p className="mt-1 text-[10px] font-bold text-slate-400">
                                     {node.ref.kind === "pattern" ? "TCO " : "Cost "}
                                     {COST_SYMBOL[node.cost]}
+                                  </p>
+                                )}
+                                {recommendationCaption && recommendationCaption.length > 0 && (
+                                  <p className="mt-1 text-[10px] font-semibold text-amber-700">
+                                    Recommended for: {recommendationCaption.join(", ")}
                                   </p>
                                 )}
                               </div>
