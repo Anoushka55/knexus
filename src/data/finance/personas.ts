@@ -326,113 +326,263 @@ export const problemStatements: ProblemStatement[] = [
 export interface Challenge {
   id: string;
   label: string;
+  horizon: Horizon;
   themeIds: ThemeId[];
 }
 
+// Every challenge now carries the horizon it actually belongs to, so the
+// DILO/MILO/YILO control filters this column the same way it filters
+// Problem Statements — previously it didn't, which meant switching horizons
+// only ever changed the first column and left Challenges and Automation
+// Opportunity looking identical regardless of which lens was selected.
 export const challenges: Challenge[] = [
+  // ---- DILO ----
+  {
+    id: "ch-cash-manual",
+    label: "Cash positions are consolidated by hand from a dozen-plus separate bank portals every morning, and CFO-level escalations run on the same stale view",
+    horizon: "dilo",
+    themeIds: ["treasury-cash"],
+  },
+  {
+    id: "ch-exception-queue",
+    label: "GL exceptions get chased down one at a time across entities, with no single queue to work from",
+    horizon: "dilo",
+    themeIds: ["record-to-report"],
+  },
+  {
+    id: "ch-stale-actuals",
+    label: "Actuals load a day late, so business-partnering questions get answered on yesterday's numbers",
+    horizon: "dilo",
+    themeIds: ["planning-forecasting"],
+  },
+  {
+    id: "ch-tax-query",
+    label: "Transaction-level tax queries from the business get answered ad hoc, with no searchable rulings history to draw on",
+    horizon: "dilo",
+    themeIds: ["tax-compliance"],
+  },
   {
     id: "ch-invoice-manual",
     label: "Invoice matching and coding still fall back to manual work wherever PO coverage is thin or line-item complexity is high",
+    horizon: "dilo",
     themeIds: ["procure-to-pay"],
   },
   {
-    id: "ch-grir-scramble",
-    label: "Month-end AP ageing and GR/IR clearing turns into a manual scramble before books close",
-    themeIds: ["procure-to-pay", "record-to-report"],
+    id: "ch-issue-log",
+    label: "Open audit issues and control exceptions live in a spreadsheet, with no shared, current view across the team",
+    horizon: "dilo",
+    themeIds: ["controls-audit"],
+  },
+
+  // ---- MILO ----
+  {
+    id: "ch-variance-manual",
+    label: "Flash results and the budget-vs-actual variance pack are assembled by hand from five disconnected source systems that don't tie out",
+    horizon: "milo",
+    themeIds: ["planning-forecasting"],
   },
   {
     id: "ch-consolidation-manual",
     label: "Multi-entity consolidation still needs manual elimination entries and trial-balance tie-outs",
+    horizon: "milo",
     themeIds: ["record-to-report"],
-  },
-  {
-    id: "ch-exception-queue",
-    label: "No single exception queue across entities, so GL issues get chased down one at a time",
-    themeIds: ["record-to-report"],
-  },
-  {
-    id: "ch-variance-manual",
-    label: "Budget-vs-actual variance packs are assembled by hand from disconnected source systems",
-    themeIds: ["planning-forecasting"],
-  },
-  {
-    id: "ch-stale-actuals",
-    label: "Actuals load a day late, so business-partnering questions get answered on stale numbers",
-    themeIds: ["planning-forecasting"],
   },
   {
     id: "ch-tax-recon",
-    label: "Indirect tax filings are reconciled against the GL entity by entity with no searchable rulings history",
+    label: "Indirect tax filings are reconciled against the general ledger entity by entity",
+    horizon: "milo",
     themeIds: ["tax-compliance"],
   },
   {
-    id: "ch-cash-manual",
-    label: "Cash positions are consolidated by hand from a dozen-plus separate bank portals every morning",
+    id: "ch-liquidity-format",
+    label: "The 13-week liquidity forecast is built from inputs that arrive in inconsistent formats",
+    horizon: "milo",
     themeIds: ["treasury-cash"],
   },
   {
-    id: "ch-liquidity-format",
-    label: "13-week liquidity forecasts are built from inputs that arrive in inconsistent formats",
-    themeIds: ["treasury-cash"],
+    id: "ch-grir-scramble",
+    label: "Month-end AP ageing and GR/IR clearing turns into a manual scramble before books close",
+    horizon: "milo",
+    themeIds: ["procure-to-pay", "record-to-report"],
   },
   {
     id: "ch-evidence-format",
     label: "Control-testing evidence arrives in inconsistent formats across entities every quarter",
+    horizon: "milo",
     themeIds: ["controls-audit"],
   },
+
+  // ---- YILO ----
   {
     id: "ch-board-deck-manual",
     label: "The board deck and investor narrative are assembled from disconnected slides built independently by five teams",
+    horizon: "yilo",
     themeIds: ["board-strategic-reporting"],
+  },
+  {
+    id: "ch-statutory-manual",
+    label: "Statutory financial statements and external audit fieldwork are prepared largely by hand, entity by entity",
+    horizon: "yilo",
+    themeIds: ["record-to-report", "controls-audit"],
+  },
+  {
+    id: "ch-budget-cycle",
+    label: "The annual budgeting cycle runs across 40+ cost centres by email and spreadsheet template",
+    horizon: "yilo",
+    themeIds: ["planning-forecasting"],
+  },
+  {
+    id: "ch-transfer-pricing",
+    label: "Transfer-pricing documentation and statutory filings are assembled market by market with no shared template or prior-year baseline",
+    horizon: "yilo",
+    themeIds: ["tax-compliance"],
+  },
+  {
+    id: "ch-covenant-manual",
+    label: "Covenant compliance certificates and refinancing analysis are rebuilt from scratch for every lender and rating agency",
+    horizon: "yilo",
+    themeIds: ["treasury-cash"],
+  },
+  {
+    id: "ch-vendor-audit",
+    label: "Vendor payment-term renegotiation and the annual P2P control audit both start from a blank sheet every year",
+    horizon: "yilo",
+    themeIds: ["procure-to-pay", "controls-audit"],
+  },
+  {
+    id: "ch-sox-manual",
+    label: "Annual SOX certification and enterprise risk assessment are assembled from scratch instead of building on the year's quarterly control testing",
+    horizon: "yilo",
+    themeIds: ["controls-audit"],
   },
 ];
 
 export interface AutomationOpportunity {
   id: string;
   label: string;
+  horizon: Horizon;
   themeIds: ThemeId[];
 }
 
 export const automationOpportunities: AutomationOpportunity[] = [
+  // ---- DILO ----
+  {
+    id: "auto-cash-agg",
+    label: "Automated multi-bank cash aggregation feeding one daily position, visible to Treasury and the CFO alike",
+    horizon: "dilo",
+    themeIds: ["treasury-cash"],
+  },
+  {
+    id: "auto-exception-queue",
+    label: "One live exception queue across every entity instead of an inbox per entity",
+    horizon: "dilo",
+    themeIds: ["record-to-report"],
+  },
+  {
+    id: "auto-same-day-actuals",
+    label: "Same-day actuals refresh so business partnering runs on today's numbers, not yesterday's",
+    horizon: "dilo",
+    themeIds: ["planning-forecasting"],
+  },
+  {
+    id: "auto-tax-query",
+    label: "AI-assisted query answering against a searchable rulings and precedent library",
+    horizon: "dilo",
+    themeIds: ["tax-compliance"],
+  },
   {
     id: "auto-exception-only",
     label: "Exception-only invoice processing: match automatically, route only genuine exceptions to a person",
+    horizon: "dilo",
     themeIds: ["procure-to-pay"],
+  },
+  {
+    id: "auto-issue-tracker",
+    label: "A live, shared issue-and-exception tracker replacing the spreadsheet log",
+    horizon: "dilo",
+    themeIds: ["controls-audit"],
+  },
+
+  // ---- MILO ----
+  {
+    id: "auto-variance-pack",
+    label: "Automated variance-pack and flash-results assembly with a same-day actuals refresh",
+    horizon: "milo",
+    themeIds: ["planning-forecasting"],
+  },
+  {
+    id: "auto-consolidation",
+    label: "Automated consolidation and elimination across every entity",
+    horizon: "milo",
+    themeIds: ["record-to-report"],
+  },
+  {
+    id: "auto-tax-recon",
+    label: "Automated indirect-tax reconciliation against the ledger, entity by entity",
+    horizon: "milo",
+    themeIds: ["tax-compliance"],
+  },
+  {
+    id: "auto-liquidity",
+    label: "Automated liquidity-forecast assembly regardless of source format",
+    horizon: "milo",
+    themeIds: ["treasury-cash"],
   },
   {
     id: "auto-continuous-grir",
     label: "Continuous GR/IR monitoring instead of a month-end sweep",
+    horizon: "milo",
     themeIds: ["procure-to-pay", "record-to-report"],
   },
   {
-    id: "auto-consolidation",
-    label: "Automated consolidation and elimination with one exception queue across every entity",
-    themeIds: ["record-to-report"],
-  },
-  {
-    id: "auto-variance-pack",
-    label: "Automated variance-pack assembly with a same-day actuals refresh",
-    themeIds: ["planning-forecasting"],
-  },
-  {
-    id: "auto-tax-recon",
-    label: "Automated indirect-tax reconciliation with a searchable rulings and query library",
-    themeIds: ["tax-compliance"],
-  },
-  {
-    id: "auto-cash-agg",
-    label: "Automated multi-bank cash aggregation feeding a continuously updated liquidity forecast",
-    themeIds: ["treasury-cash"],
-  },
-  {
     id: "auto-evidence",
-    label: "Standardised evidence collection and automated control-testing workpapers",
+    label: "Standardised evidence collection feeding automated control-testing workpapers",
+    horizon: "milo",
     themeIds: ["controls-audit"],
   },
+
+  // ---- YILO ----
   {
     id: "auto-board-pack",
     label: "Automated board-pack assembly pulling directly from consolidation, FP&A and treasury outputs",
+    horizon: "yilo",
     themeIds: ["board-strategic-reporting"],
+  },
+  {
+    id: "auto-statutory",
+    label: "Automated statutory-pack assembly with a direct handoff to audit evidence",
+    horizon: "yilo",
+    themeIds: ["record-to-report", "controls-audit"],
+  },
+  {
+    id: "auto-budget-cycle",
+    label: "A single online budgeting workflow replacing the email-and-spreadsheet cycle across every cost centre",
+    horizon: "yilo",
+    themeIds: ["planning-forecasting"],
+  },
+  {
+    id: "auto-transfer-pricing",
+    label: "Automated transfer-pricing documentation from a reusable cross-market template and prior-year baseline",
+    horizon: "yilo",
+    themeIds: ["tax-compliance"],
+  },
+  {
+    id: "auto-covenant",
+    label: "Automated covenant-compliance certificate generation straight from the live liquidity model",
+    horizon: "yilo",
+    themeIds: ["treasury-cash"],
+  },
+  {
+    id: "auto-vendor-audit",
+    label: "Standing vendor-term benchmarks and a reusable P2P control-audit evidence pack instead of starting from zero",
+    horizon: "yilo",
+    themeIds: ["procure-to-pay", "controls-audit"],
+  },
+  {
+    id: "auto-sox",
+    label: "Automated SOX certification pack assembled directly from the year's quarterly testing evidence",
+    horizon: "yilo",
+    themeIds: ["controls-audit"],
   },
 ];
 
@@ -470,8 +620,11 @@ export const agents: FinanceAgent[] = [
   {
     id: "consolidation-agent",
     title: "Consolidation & Elimination Agent",
+    // Deliberately spans all three horizons for record-to-report: the
+    // month-end consolidation and the annual statutory pack are the same
+    // underlying data, not two separate jobs.
     description:
-      "Runs multi-entity consolidation and elimination entries, and surfaces trial-balance breaks in one exception queue instead of an inbox per entity.",
+      "Runs multi-entity consolidation and elimination entries, surfaces trial-balance breaks in one exception queue instead of an inbox per entity, and hands the statutory pack straight to audit evidence at year end.",
     status: "build",
     themeIds: ["record-to-report"],
   },
@@ -479,7 +632,7 @@ export const agents: FinanceAgent[] = [
     id: "variance-analysis-agent",
     title: "Variance Analysis Agent",
     description:
-      "Assembles the budget-vs-actual variance pack from source systems automatically and drafts the commentary a business partner would otherwise write by hand.",
+      "Assembles the budget-vs-actual variance pack from source systems automatically, drafts the commentary a business partner would otherwise write by hand, and runs the annual budgeting workflow across every cost centre.",
     status: "build",
     themeIds: ["planning-forecasting"],
   },
@@ -487,7 +640,7 @@ export const agents: FinanceAgent[] = [
     id: "tax-compliance-agent",
     title: "Tax Compliance & Filing Agent",
     description:
-      "Reconciles indirect tax filings against the ledger entity by entity and answers transaction-level tax queries against a searchable rulings library.",
+      "Answers transaction-level tax queries against a searchable rulings library, reconciles indirect tax filings against the ledger entity by entity, and assembles transfer-pricing documentation from a reusable cross-market template.",
     status: "build",
     themeIds: ["tax-compliance"],
   },
@@ -495,7 +648,7 @@ export const agents: FinanceAgent[] = [
     id: "cash-positioning-agent",
     title: "Cash Positioning & Liquidity Agent",
     description:
-      "Aggregates cash positions across every bank portal each morning and rolls them into a continuously updated 13-week liquidity forecast.",
+      "Aggregates cash positions across every bank portal each morning, rolls them into a continuously updated 13-week liquidity forecast, and generates covenant-compliance certificates straight from that same live model.",
     status: "build",
     themeIds: ["treasury-cash"],
   },
@@ -503,7 +656,7 @@ export const agents: FinanceAgent[] = [
     id: "controls-testing-agent",
     title: "Controls Testing & Audit Evidence Agent",
     description:
-      "Standardises control-testing evidence across entities and assembles the workpapers a controls tester would otherwise chase down by email.",
+      "Tracks open audit issues in one live queue, standardises control-testing evidence across entities, and assembles the annual SOX certification pack directly from that quarter-by-quarter evidence.",
     status: "build",
     themeIds: ["controls-audit"],
   },

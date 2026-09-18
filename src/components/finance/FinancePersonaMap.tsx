@@ -21,11 +21,15 @@ import { cn } from "@/lib/utils";
 
 // Cloned from CapabilityMap.tsx: same five-column geometry, same single
 // shared-key trace (here `themeId` instead of `pillarId`), same hover/lock/
-// connector-line mechanics. Two additions: the DILO/MILO/YILO control,
-// which filters only the Problem Statement column (every other column
-// stays fully visible, exactly as no column in the original map is ever
-// filtered — only what a user hovers changes); and per-theme color coding,
-// on both the node dots and the connector lines, so a link is visually
+// connector-line mechanics. Two additions: the DILO/MILO/YILO control, which
+// filters Problem Statements, Challenges and Automation Opportunity — each
+// of those three carries a `horizon`, so the map genuinely shows a
+// different set of pain points, not just a different set of people, at
+// each cadence. Personas and Agents stay fully visible at every horizon on
+// purpose: the roles don't disappear when the lens changes, and an agent
+// spanning all three horizons for its theme (see personas.ts) is meant to
+// read as a feature, not an inconsistency. And per-theme color coding, on
+// both the node dots and the connector lines, so a link is visually
 // explained rather than only revealed on hover.
 //
 // Columns are NOT height-capped with internal scroll, unlike a naive port
@@ -107,21 +111,25 @@ function buildNodes(activeHorizon: Horizon): MapNode[] {
       themeIds: ps.themeIds,
     }));
 
-  const challengeNodes: MapNode[] = challenges.map((c) => ({
-    id: `challenge:${c.id}`,
-    column: "challenges",
-    title: c.label,
-    caption: themeLabels(c.themeIds),
-    themeIds: c.themeIds,
-  }));
+  const challengeNodes: MapNode[] = challenges
+    .filter((c) => c.horizon === activeHorizon)
+    .map((c) => ({
+      id: `challenge:${c.id}`,
+      column: "challenges",
+      title: c.label,
+      caption: themeLabels(c.themeIds),
+      themeIds: c.themeIds,
+    }));
 
-  const automationNodes: MapNode[] = automationOpportunities.map((a) => ({
-    id: `automation:${a.id}`,
-    column: "automation",
-    title: a.label,
-    caption: themeLabels(a.themeIds),
-    themeIds: a.themeIds,
-  }));
+  const automationNodes: MapNode[] = automationOpportunities
+    .filter((a) => a.horizon === activeHorizon)
+    .map((a) => ({
+      id: `automation:${a.id}`,
+      column: "automation",
+      title: a.label,
+      caption: themeLabels(a.themeIds),
+      themeIds: a.themeIds,
+    }));
 
   const agentNodes: MapNode[] = agents.map((a) => ({
     id: `agent:${a.id}`,
