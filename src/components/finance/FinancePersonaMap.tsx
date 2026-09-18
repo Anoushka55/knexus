@@ -309,7 +309,7 @@ export function FinancePersonaMap() {
       </div>
 
       <div className="overflow-x-auto pb-2">
-        <div ref={containerRef} className="relative flex flex-col lg:flex-row lg:items-stretch gap-6 lg:min-w-[1376px]">
+        <div ref={containerRef} className="relative flex flex-col lg:flex-row lg:items-stretch gap-4">
           <svg className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" aria-hidden="true">
             {lines.map((line) => (
               <path key={line.id} d={line.d} stroke={line.color} strokeWidth={1.5} fill="none" />
@@ -319,7 +319,7 @@ export function FinancePersonaMap() {
           {columns.map((column) => (
             <div
               key={column.key}
-              className="flex flex-col lg:w-64 lg:flex-shrink-0 rounded-xl border border-slate-200 overflow-hidden"
+              className="flex flex-col lg:flex-1 lg:min-w-0 rounded-xl border border-slate-200 overflow-hidden"
             >
               <div className="flex items-baseline justify-between gap-2 bg-brand-navy px-4 py-3 flex-shrink-0">
                 <p className="text-sm font-bold text-white">{COLUMN_LABELS[column.key]}</p>
