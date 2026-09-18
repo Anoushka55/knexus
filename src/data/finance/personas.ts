@@ -82,6 +82,32 @@ export function themeLabels(ids: ThemeId[]): string {
   return ids.map((id) => themeLabelById.get(id) ?? id).join(" · ");
 }
 
+// Seven distinct, consistent colors — one per theme, used for the dot row on
+// every card (so the correlation is visible before you even hover) and for
+// the connector line itself (colored by whichever theme the two nodes
+// actually share, so a line answers "why are these linked" on sight).
+export const THEME_DOT: Record<ThemeId, string> = {
+  "procure-to-pay": "bg-brand-blue",
+  "record-to-report": "bg-brand-violet",
+  "planning-forecasting": "bg-brand-green",
+  "tax-compliance": "bg-orange-500",
+  "treasury-cash": "bg-cyan-600",
+  "controls-audit": "bg-rose-600",
+  "board-strategic-reporting": "bg-indigo-600",
+};
+
+// Same seven hues as THEME_DOT, as rgba strings for SVG stroke — a
+// Tailwind class can't be used directly as a stroke value.
+export const THEME_STROKE: Record<ThemeId, string> = {
+  "procure-to-pay": "rgba(26,58,143,0.6)",
+  "record-to-report": "rgba(139,92,246,0.6)",
+  "planning-forecasting": "rgba(22,163,74,0.6)",
+  "tax-compliance": "rgba(249,115,22,0.6)",
+  "treasury-cash": "rgba(8,145,178,0.6)",
+  "controls-audit": "rgba(225,29,72,0.6)",
+  "board-strategic-reporting": "rgba(79,70,229,0.6)",
+};
+
 export interface Persona {
   id: string;
   title: string;

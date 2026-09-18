@@ -4,6 +4,8 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useReducedMotion } from "framer-motion";
 import {
   HORIZON_DOT,
+  THEME_DOT,
+  THEME_STROKE,
   agents,
   automationOpportunities,
   challenges,
@@ -11,16 +13,31 @@ import {
   personas,
   problemStatements,
   themeLabels,
+  themes,
   type Horizon,
+  type ThemeId,
 } from "@/data/finance/personas";
 import { cn } from "@/lib/utils";
 
 // Cloned from CapabilityMap.tsx: same five-column geometry, same single
 // shared-key trace (here `themeId` instead of `pillarId`), same hover/lock/
-// connector-line mechanics. The one addition is the DILO/MILO/YILO control,
-// which filters only the Problem Statement column — every other column
+// connector-line mechanics. Two additions: the DILO/MILO/YILO control,
+// which filters only the Problem Statement column (every other column
 // stays fully visible, exactly as no column in the original map is ever
-// filtered; only what a user hovers changes.
+// filtered — only what a user hovers changes); and per-theme color coding,
+// on both the node dots and the connector lines, so a link is visually
+// explained rather than only revealed on hover.
+//
+// Columns are NOT height-capped with internal scroll, unlike a naive port
+// of the original would be. With up to 11 challenges and 10 agents, a fixed
+// height plus overflow-y-auto lets a connected node scroll below the fold
+// while the connector SVG — an absolute overlay with no knowledge of that
+// inner scroll position — keeps drawing to its true, now-invisible
+// position. That is exactly what reads as an arrow that doesn't land on
+// anything. Letting columns grow to their natural content height (the row
+// still aligns them via the flexbox default of stretching to the tallest)
+// removes the possibility of a node being off-screen within its own column
+// at all, so every line's endpoint is always the card you can see.
 
 type ColumnKey = "personas" | "problems" | "challenges" | "automation" | "agents";
 
@@ -30,7 +47,7 @@ interface MapNode {
   title: string;
   caption?: string;
   badge?: string;
-  themeIds: string[];
+  themeIds: ThemeId[];
   horizonDots?: Horizon[];
 }
 
@@ -42,18 +59,19 @@ const COLUMN_LABELS: Record<ColumnKey, string> = {
   agents: "Agents",
 };
 
-const COLUMN_DOTS: Partial<Record<ColumnKey, string>> = {
-  personas: "bg-brand-blue",
-  agents: "bg-brand-green",
-};
-
 function sharesTheme(a: MapNode, b: MapNode): boolean {
   return a.themeIds.some((id) => b.themeIds.includes(id));
+}
+
+/** The theme that explains why two nodes are connected, for line coloring. */
+function firstSharedTheme(a: MapNode, b: MapNode): ThemeId | null {
+  return a.themeIds.find((id) => b.themeIds.includes(id)) ?? null;
 }
 
 interface Line {
   id: string;
   d: string;
+  color: string;
 }
 
 const DESKTOP_BREAKPOINT = 1024;
@@ -128,7 +146,6 @@ export function FinancePersonaMap() {
       (Object.keys(COLUMN_LABELS) as ColumnKey[]).map((key) => ({
         key,
         nodes: allNodes.filter((n) => n.column === key),
-        dot: COLUMN_DOTS[key],
       })),
     [allNodes]
   );
@@ -185,9 +202,13 @@ export function FinancePersonaMap() {
       const y2 = targetRect.top + targetRect.height / 2 - containerRect.top;
       const dx = (x2 - x1) / 2;
 
+      const theme = firstSharedTheme(activeNode, targetNode);
+      const color = theme ? THEME_STROKE[theme] : "rgba(26,58,143,0.5)";
+
       next.push({
         id: `${activeId}->${targetId}`,
         d: `M ${x1},${y1} C ${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`,
+        color,
       });
     });
 
@@ -253,7 +274,17 @@ export function FinancePersonaMap() {
           </button>
         ))}
       </div>
-      <p className="text-xs text-slate-400 mb-6">{activeHorizonInfo.definition}</p>
+      <p className="text-xs text-slate-400 mb-5">{activeHorizonInfo.definition}</p>
+
+      {/* ---- theme legend — decodes both the card dots and the line colors ---- */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mb-5">
+        {themes.map((t) => (
+          <span key={t.id} className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <span className={cn("h-2 w-2 rounded-full", THEME_DOT[t.id])} />
+            {t.label}
+          </span>
+        ))}
+      </div>
 
       <div className="flex items-center justify-between gap-4 mb-5">
         <p className="text-sm text-slate-500">
@@ -278,24 +309,24 @@ export function FinancePersonaMap() {
       </div>
 
       <div className="overflow-x-auto pb-2">
-        <div ref={containerRef} className="relative flex flex-col lg:flex-row gap-6 lg:min-w-[1376px]">
+        <div ref={containerRef} className="relative flex flex-col lg:flex-row lg:items-stretch gap-6 lg:min-w-[1376px]">
           <svg className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" aria-hidden="true">
             {lines.map((line) => (
-              <path key={line.id} d={line.d} stroke="rgba(26,58,143,0.5)" strokeWidth={1} fill="none" />
+              <path key={line.id} d={line.d} stroke={line.color} strokeWidth={1.5} fill="none" />
             ))}
           </svg>
 
           {columns.map((column) => (
             <div
               key={column.key}
-              className="flex flex-col lg:w-64 lg:flex-shrink-0 rounded-xl border border-slate-200 overflow-hidden lg:h-[600px]"
+              className="flex flex-col lg:w-64 lg:flex-shrink-0 rounded-xl border border-slate-200 overflow-hidden"
             >
               <div className="flex items-baseline justify-between gap-2 bg-brand-navy px-4 py-3 flex-shrink-0">
                 <p className="text-sm font-bold text-white">{COLUMN_LABELS[column.key]}</p>
                 <p className="text-xs font-semibold text-white/60 flex-shrink-0">{column.nodes.length}</p>
               </div>
 
-              <div className="flex-1 lg:overflow-y-auto bg-slate-50 p-3 space-y-2">
+              <div className="flex-1 bg-slate-50 p-3 space-y-2">
                 {column.nodes.map((node) => {
                   const status: "active" | "dimmed" | "normal" = !activeId || !connectedIds
                     ? "normal"
@@ -333,37 +364,40 @@ export function FinancePersonaMap() {
                       )}
                     >
                       {node.horizonDots && node.horizonDots.length > 0 && (
-                        <div className="flex items-center gap-1 mb-1.5">
+                        <div className="flex items-center gap-1 mb-1">
                           {node.horizonDots.map((h) => (
                             <span key={h} className={cn("h-1.5 w-1.5 rounded-full", HORIZON_DOT[h])} />
                           ))}
                         </div>
                       )}
-                      <div className="flex items-start gap-2">
-                        {column.dot && !node.horizonDots && (
-                          <span className={cn("mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full", column.dot)} />
-                        )}
-                        <div className="min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm font-semibold text-slate-900 leading-snug">{node.title}</p>
-                            {node.badge && (
-                              <span
-                                className={cn(
-                                  "flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold",
-                                  node.badge === "Built"
-                                    ? "bg-brand-green/10 text-brand-green"
-                                    : "bg-amber-100 text-amber-700"
-                                )}
-                              >
-                                {node.badge}
-                              </span>
-                            )}
-                          </div>
-                          {node.caption && (
-                            <p className="mt-1 text-xs text-slate-500 leading-snug">{node.caption}</p>
-                          )}
-                        </div>
+
+                      {/* One dot per theme this node belongs to — decoded by
+                          the legend above, and the same colors the
+                          connector lines use. */}
+                      <div className="flex items-center gap-1 mb-1.5">
+                        {node.themeIds.map((t) => (
+                          <span key={t} className={cn("h-1.5 w-1.5 rounded-full", THEME_DOT[t])} />
+                        ))}
                       </div>
+
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm font-semibold text-slate-900 leading-snug">{node.title}</p>
+                        {node.badge && (
+                          <span
+                            className={cn(
+                              "flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold",
+                              node.badge === "Built"
+                                ? "bg-brand-green/10 text-brand-green"
+                                : "bg-amber-100 text-amber-700"
+                            )}
+                          >
+                            {node.badge}
+                          </span>
+                        )}
+                      </div>
+                      {node.caption && (
+                        <p className="mt-1 text-xs text-slate-500 leading-snug">{node.caption}</p>
+                      )}
                     </button>
                   );
                 })}
