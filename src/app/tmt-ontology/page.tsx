@@ -7,7 +7,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 const OntologyGraph = dynamic(
   () => import("@/components/ontology/OntologyGraph"),
-  { ssr: false, loading: () => <GraphSkeleton /> }
+  { ssr: false, loading: () => <GraphSkeleton /> },
 );
 
 function GraphSkeleton() {
@@ -31,7 +31,10 @@ export default function TMTOntologyPage() {
         {/* Breadcrumb sits inside the title bar so the graph keeps its full height */}
         <div className="max-w-7xl mx-auto [&>nav]:mb-2">
           <Breadcrumb
-            crumbs={[{ label: "Marketplace", href: "/" }, { label: "TMT Ontology" }]}
+            crumbs={[
+              { label: "Marketplace", href: "/" },
+              { label: "TMT Ontology" },
+            ]}
           />
         </div>
 
@@ -41,28 +44,99 @@ export default function TMTOntologyPage() {
               TMT Sector Ontology
             </h1>
             <p className="text-sm text-slate-500 mt-0.5">
-              Technology · Media · Telecom — entity relationships across Infrastructure, AI Ops, Cloud, and more
+              Technology · Media · Telecom — entity relationships across
+              Infrastructure, AI Ops, Cloud, and more
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className="flex items-center gap-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
-              Ontology node
-            </span>
-            <span className="flex items-center gap-1 ml-2">
-              <span className="inline-block" style={{ lineHeight: 1 }}>
-                <svg width="12" height="10" viewBox="0 0 10 9">
-                  <circle cx="5" cy="5" r="4" fill="none" stroke="#0d9488" strokeWidth="1.5" />
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2">
+              <a
+                href="https://telcobillingagent.ezdatamunch.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-full bg-brand-blue text-white hover:bg-brand-blue-dark transition-colors"
+              >
+                Billing Assistant
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 1h6v6"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M9 1L1 9"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
+              </a>
+              <a
+                href="https://kpmgcfoagents.ezdatamunch.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-full border border-brand-blue text-brand-blue bg-white hover:bg-brand-soft transition-colors"
+              >
+                CFO Intelligence
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 1h6v6"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M9 1L1 9"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </a>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
+                Ontology node
               </span>
-              Metric
-            </span>
-            <span className="flex items-center gap-1 ml-2">
-              <svg width="12" height="10" viewBox="0 0 10 9">
-                <polygon points="5,0 10,9 0,9" fill="#dc2626" />
-              </svg>
-              Decision
-            </span>
+              <span className="flex items-center gap-1 ml-2">
+                <span className="inline-block" style={{ lineHeight: 1 }}>
+                  <svg width="12" height="10" viewBox="0 0 10 9">
+                    <circle
+                      cx="5"
+                      cy="5"
+                      r="4"
+                      fill="none"
+                      stroke="#0d9488"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                </span>
+                Metric
+              </span>
+              <span className="flex items-center gap-1 ml-2">
+                <svg width="12" height="10" viewBox="0 0 10 9">
+                  <polygon points="5,0 10,9 0,9" fill="#dc2626" />
+                </svg>
+                Decision
+              </span>
+            </div>
           </div>
         </div>
 
@@ -104,14 +178,24 @@ export default function TMTOntologyPage() {
                 }
               >
                 {cat.id === "decisions" ? (
-                  <svg width="8" height="7" viewBox="0 0 8 7" className="flex-shrink-0">
+                  <svg
+                    width="8"
+                    height="7"
+                    viewBox="0 0 8 7"
+                    className="flex-shrink-0"
+                  >
                     <polygon
                       points="4,0 8,7 0,7"
                       fill={active ? "#fff" : cat.color}
                     />
                   </svg>
                 ) : cat.id === "metrics" ? (
-                  <svg width="8" height="8" viewBox="0 0 8 8" className="flex-shrink-0">
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 8 8"
+                    className="flex-shrink-0"
+                  >
                     <circle
                       cx="4"
                       cy="4"
