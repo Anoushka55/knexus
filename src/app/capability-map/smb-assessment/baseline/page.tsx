@@ -97,6 +97,14 @@ export default function SmbBaselinePage() {
                     )}
                   </div>
                   <p className="mt-1 text-xs text-slate-500 leading-snug">→ {pain.service}</p>
+                  {pain.stat && (
+                    <p className="mt-1.5 text-xs font-medium text-brand-blue leading-snug">
+                      {pain.stat}
+                      {pain.statSource && (
+                        <span className="ml-1 font-normal text-slate-400">— {pain.statSource}</span>
+                      )}
+                    </p>
+                  )}
                 </div>
               </button>
             );

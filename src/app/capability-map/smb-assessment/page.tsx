@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { ArrowRight, Info } from "lucide-react";
+import { MetricsRow } from "@/components/solutions/MetricsRow";
 import { useSmbAssessment } from "@/components/smb/SmbAssessmentContext";
-import { landscapes, segments } from "@/data/smb/assessment";
+import { landscapes, marketStats, marketStatsSource, segments } from "@/data/smb/assessment";
 import { cn } from "@/lib/utils";
 
 const inputClass =
@@ -34,6 +35,8 @@ export default function SmbContextPage() {
           </div>
         </div>
       </section>
+
+      <MetricsRow metrics={marketStats} source={marketStatsSource} />
 
       <section className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid md:grid-cols-2 gap-10 max-w-3xl">
