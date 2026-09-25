@@ -422,7 +422,7 @@ export function FinancePersonaMap() {
       </div>
 
       <p className="mt-4 text-xs text-slate-400 leading-relaxed max-w-3xl">
-        Personas, problem statements and challenges are illustrative, informed by common finance
+        Personas, problem statements and challenges are illustrative, informed by common
         operating-model engagement patterns — not any specific client. Agents marked &ldquo;Built&rdquo;
         already exist in the marketplace; &ldquo;In build&rdquo; agents are on the roadmap.
       </p>

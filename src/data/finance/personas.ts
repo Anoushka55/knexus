@@ -2,11 +2,14 @@
 //
 // DILO / MILO / YILO ("Day / Month / Year in the life of") is a standard
 // consulting lens for describing a role: what it does daily, the cycle it
-// owns monthly, and the cadence it owns annually. Each persona's problem
-// statements are tagged with the horizon they belong to, so the horizon
-// control filters that one column — everything else in the map stays
-// visible and correlates through the shared theme, the same way the TMT
-// Capability Map correlates through a shared pillar.
+// owns monthly, and the cadence it owns annually. Problem statements,
+// challenges and automation opportunities are all tagged with the horizon
+// they belong to, so the horizon control filters all three columns
+// consistently. Personas and agents are deliberately left unfiltered —
+// roles don't disappear when the lens changes, and an agent spanning every
+// horizon for its theme is meant to read as a feature. Everything
+// correlates through the shared theme, the same way the TMT Capability Map
+// correlates through a shared pillar.
 //
 // No client name anywhere: personas are generic finance-function roles,
 // not any specific engagement.
