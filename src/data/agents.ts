@@ -209,7 +209,7 @@ export const agents: AgentData[] = [
     description:
       "Assess legacy systems across the estate and generate a prioritised modernisation roadmap — replatform, refactor, or retire — with effort and risk scored for each path.",
     categories: ["IT", "Operations"],
-    accessLink: "https://connect-insight-modernize.lovable.app/login",
+    accessLink: "https://connect-insight-modernize.vercel.app/",
     videoUrl: "/videos/legacy-tech-modernization.mp4",
     integrations: [],
     scope: {
@@ -279,7 +279,7 @@ export const agents: AgentData[] = [
     description:
       "A unified observability command center for engineering teams — correlating logs, metrics, traces, and deployments into one operating picture, with anomalies triaged before they page anyone.",
     categories: ["IT", "Operations"],
-    accessLink: "https://ontos-insight.lovable.app/",
+    accessLink: "https://ontos-insight.vercel.app/",
     videoUrl: "/videos/engineering-observability-command-center.mp4",
     integrations: [],
     scope: {
