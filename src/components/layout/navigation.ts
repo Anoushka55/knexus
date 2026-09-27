@@ -68,13 +68,31 @@ export const NAV_ITEMS: NavItem[] = [
           { label: "Personas", href: "/capability-map/personas" },
         ],
       },
+    ],
+  },
+  {
+    label: "Assess",
+    href: "/assessments",
+    groups: [
       {
-        label: "SMB Assessment",
+        label: "Maturity assessments",
         links: [
-          { label: "Overview", href: "/capability-map/smb-assessment" },
-          { label: "Baseline", href: "/capability-map/smb-assessment/baseline" },
-          { label: "Roadmap", href: "/capability-map/smb-assessment/roadmap" },
-          { label: "Scorecard", href: "/capability-map/smb-assessment/scorecard" },
+          { label: "All assessments", href: "/assessments" },
+          {
+            label: "Telecom AI & Agentic Maturity",
+            href: "/assessments/telecom-ai-agentic-maturity",
+          },
+          { label: "Agentic Readiness Index", href: "/assessments/agentic-readiness-index" },
+        ],
+      },
+      {
+        label: "Process & service",
+        links: [
+          {
+            label: "Procure-to-Pay Automation",
+            href: "/assessments/procure-to-pay-automation",
+          },
+          { label: "SMB Managed Services", href: "/assessments/smb-managed-services" },
         ],
       },
     ],

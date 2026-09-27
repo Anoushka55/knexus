@@ -32,10 +32,14 @@ export function middleware(req: NextRequest) {
     const user = JSON.parse(decoded);
     if (!user || !user.email) throw new Error("no user");
 
-    // Restricted accounts cannot reach Agent Forge or the AI Assistant chat
-    // endpoint — both call the Claude API and burn credits.
+    // Restricted accounts cannot reach Agent Forge or the endpoints that call
+    // the Claude API and burn credits. The assessment narrative degrades to a
+    // deterministic template on a 403, so the scorecard stays complete.
     if (user.role === "restricted") {
-      if (pathname.startsWith("/api/chat")) {
+      if (
+        pathname.startsWith("/api/chat") ||
+        pathname.startsWith("/api/assessments/")
+      ) {
         return NextResponse.json({ error: "Not available for this account" }, { status: 403 });
       }
       if (pathname.startsWith("/forge")) {

@@ -78,7 +78,7 @@ export default function CapabilityMapPage() {
             </Link>
 
             <Link
-              href="/capability-map/smb-assessment"
+              href="/assessments/smb-managed-services"
               className="group flex items-center justify-between gap-6 rounded-2xl border border-slate-200 bg-slate-50 p-6 hover:border-brand-blue hover:shadow-card-hover transition-all"
             >
               <div className="flex items-start gap-4">

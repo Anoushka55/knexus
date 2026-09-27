@@ -31,6 +31,18 @@
     display: none;
   }
 
+  /*
+   * Assessment report printing.
+   *
+   * There is no PDF library in this project, so the export is the browser's own
+   * Save as PDF. That means the chrome has to be removed here rather than by
+   * rendering a different tree — including the ChatBot, which is mounted in the
+   * root layout and so cannot be opted out of per route.
+   */
+  .assessment-report {
+    --report-print: 1;
+  }
+
   .hero-gradient {
     background:
       radial-gradient(ellipse 70% 55% at 50% 30%, rgba(255, 255, 255, 0.92) 0%, transparent 70%),
@@ -38,5 +50,36 @@
       radial-gradient(ellipse 55% 50% at 90% 20%, rgba(59, 130, 246, 0.09) 0%, transparent 65%),
       radial-gradient(ellipse 45% 40% at 78% 8%, rgba(245, 158, 11, 0.05) 0%, transparent 60%),
       linear-gradient(180deg, #f3f4fd 0%, #f6f4fc 45%, #eeebfa 100%);
+  }
+}
+
+@media print {
+  /* Chrome that must never reach the page. ChatBot is mounted globally in the
+     root layout, so it can only be removed from here. */
+  header,
+  footer,
+  nav[aria-label="Assessment steps"],
+  [data-chatbot],
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  /* Charts are the point of the report — keep their fills. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* The shell is a two-column grid on screen; the report is one column. */
+  .assessment-report {
+    max-width: none;
+  }
+
+  @page {
+    margin: 14mm;
   }
 }

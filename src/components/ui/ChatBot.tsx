@@ -94,6 +94,7 @@ export default function ChatBot() {
       {/* ── Chat panel ── */}
       {open && (
         <div
+          data-chatbot
           className="fixed right-5 z-50 flex flex-col w-[420px] max-w-[calc(100vw-1.5rem)]"
           style={{
             bottom: "5.5rem",
@@ -295,7 +296,7 @@ export default function ChatBot() {
       )}
 
       {/* ── Floating button ── */}
-      <div className="fixed bottom-6 right-5 z-50">
+      <div data-chatbot className="fixed bottom-6 right-5 z-50">
         <span
           className="absolute inset-0 rounded-full animate-ping"
           style={{ border: "2px solid rgba(29,78,216,0.55)", animationDuration: "2s" }}
