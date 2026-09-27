@@ -33,8 +33,10 @@
 
   .hero-gradient {
     background:
-      radial-gradient(ellipse at 65% 0%, rgba(26, 58, 143, 0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 10% 85%, rgba(26, 58, 143, 0.05) 0%, transparent 50%),
-      #ffffff;
+      radial-gradient(ellipse 70% 55% at 50% 30%, rgba(255, 255, 255, 0.92) 0%, transparent 70%),
+      radial-gradient(ellipse 55% 50% at 10% 25%, rgba(139, 92, 246, 0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 50% at 90% 20%, rgba(59, 130, 246, 0.09) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 40% at 78% 8%, rgba(245, 158, 11, 0.05) 0%, transparent 60%),
+      linear-gradient(180deg, #f3f4fd 0%, #f6f4fc 45%, #eeebfa 100%);
   }
 }
