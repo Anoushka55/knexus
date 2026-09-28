@@ -15,17 +15,6 @@ import type { AssessmentOutcome, CapabilityResult } from "./scoring";
 export const MAX_CAPABILITIES_PER_AGENT = 3;
 
 /**
- * Two agents in the catalogue carry no scope/autonomy coordinates. Both read as
- * Process scope with user-approved execution from their own descriptions, so
- * they are placed here rather than by editing the catalogue — that belongs in
- * its own change, reviewed on its own terms.
- */
-const DERIVED_REACH: Record<string, Level> = {
-  "next-best-action-agent": 3,
-  "demand-planning-agent": 3,
-};
-
-/**
  * How far up the 1–5 maturity ladder an agent can carry a capability.
  *
  * `scope + autonomy - 2` means level 5 requires both journey-level scope and at
@@ -37,7 +26,10 @@ const DERIVED_REACH: Record<string, Level> = {
  * is not what does the ranking. The crosswalk and the gap sizes do that.
  */
 export function agentReach(agent: AgentData): Level | null {
-  if (!agent.scope || !agent.autonomy) return DERIVED_REACH[agent.id] ?? null;
+  // Both fields are optional on AgentData. An agent without coordinates is not
+  // assigned one here — it is simply not offered as a lever, which is the
+  // honest outcome and keeps the catalogue the single source of truth.
+  if (!agent.scope || !agent.autonomy) return null;
   const reach = agent.scope.level + agent.autonomy.level - 2;
   return Math.max(1, Math.min(5, reach)) as Level;
 }

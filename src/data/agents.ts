@@ -470,6 +470,33 @@ export const agents: AgentData[] = [
     accessLink: "https://nba-agent-five.vercel.app/",
     videoUrl: null,
     integrations: [],
+    scope: {
+      level: 3,
+      type: "Process",
+      summary: "Business process orchestration",
+      detail:
+        "Blends intent signals, journey stage and business rules across channels to decide the single next action for a customer.",
+    },
+    autonomy: {
+      level: 2,
+      type: "Guided",
+      summary: "User-approved execution",
+      detail:
+        "Produces the recommended action and the reason for it; the channel or the agent handling the customer decides whether to take it.",
+    },
+    capabilities: [
+      "Real-time next-best-action scoring per customer",
+      "Intent detection from in-session behaviour",
+      "Journey-stage aware offer selection",
+      "Business-rule and eligibility enforcement",
+      "Outcome feedback to retrain ranking",
+    ],
+    worksWithModels: ["claude-sonnet-4-6"],
+    subAgents: [
+      { name: "Intent Reader", description: "Infers what the customer is trying to do from live session signals." },
+      { name: "Action Ranker", description: "Scores candidate actions against value, eligibility and journey stage." },
+      { name: "Rule Guard", description: "Filters out actions the customer is not eligible for before they are offered." },
+    ],
   },
   {
     id: "demand-planning-agent",
@@ -481,6 +508,33 @@ export const agents: AgentData[] = [
     accessLink: "https://demandai-snowy.vercel.app/",
     videoUrl: "/videos/demand-planning-agent.mp4",
     integrations: [],
+    scope: {
+      level: 3,
+      type: "Process",
+      summary: "Business process orchestration",
+      detail:
+        "Runs the forecast-to-supply-plan loop across products and regions, reconciling demand signals with what can actually be supplied.",
+    },
+    autonomy: {
+      level: 2,
+      type: "Guided",
+      summary: "User-approved execution",
+      detail:
+        "Produces the forecast and the proposed plan with its assumptions; planners commit it before anything downstream moves.",
+    },
+    capabilities: [
+      "Demand forecasting with trend and seasonality decomposition",
+      "Supply plan alignment across products and regions",
+      "Forecast accuracy tracking and bias detection",
+      "Scenario modelling for demand shocks",
+      "Exception flagging where plan and capacity diverge",
+    ],
+    worksWithModels: ["claude-sonnet-4-6"],
+    subAgents: [
+      { name: "Trend Decomposer", description: "Separates trend, seasonality and noise from historical demand." },
+      { name: "Plan Reconciler", description: "Aligns the demand forecast against supply capacity by region." },
+      { name: "Accuracy Monitor", description: "Tracks forecast error over time and surfaces systematic bias." },
+    ],
   },
   {
     id: "kpmg-dice",
