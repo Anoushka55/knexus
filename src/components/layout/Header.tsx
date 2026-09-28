@@ -28,8 +28,15 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
-          {NAV_ITEMS.map((item) => (
-            <NavMenu key={item.label} item={item} pathname={pathname} />
+          {NAV_ITEMS.map((item, index) => (
+            <NavMenu
+              key={item.label}
+              item={item}
+              pathname={pathname}
+              // The last two triggers sit close enough to the right edge that a
+              // multi-column panel centred on them would overflow the viewport.
+              align={index >= NAV_ITEMS.length - 2 ? "end" : "center"}
+            />
           ))}
         </nav>
 

@@ -14,9 +14,16 @@ import { isActive, type NavItem } from "@/components/layout/navigation";
 export function NavMenu({
   item,
   pathname,
+  align = "center",
 }: {
   item: NavItem;
   pathname: string;
+  /**
+   * Where the panel hangs from the trigger. A wide panel centred under one of
+   * the last items would run off the right edge, so those anchor to their right
+   * edge instead.
+   */
+  align?: "center" | "end";
 }) {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -100,7 +107,13 @@ export function NavMenu({
       {/* Bridges the gap between trigger and panel so hover doesn't drop out. */}
       <div
         className={cn(
-          "absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3",
+          "absolute top-full z-50 pt-3",
+          // w-max is load-bearing: an absolutely positioned box shrink-to-fits
+          // against its containing block, which here is the narrow trigger.
+          // Without it the max-content columns are squeezed, the nowrap links
+          // overflow into each other, and overflow-hidden clips the result.
+          "w-max max-w-[92vw]",
+          align === "end" ? "right-0" : "left-1/2 -translate-x-1/2",
           !open && "pointer-events-none",
         )}
       >
