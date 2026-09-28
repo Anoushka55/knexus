@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isActive, type NavItem } from "@/components/layout/navigation";
 
@@ -149,22 +149,35 @@ export function NavMenu({
                 </p>
               )}
               <ul className="space-y-0.5">
-                {group.links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      tabIndex={open ? undefined : -1}
-                      className={cn(
-                        "block whitespace-nowrap rounded-lg px-2 py-1.5 text-sm transition-all",
-                        isActive(pathname, link.href)
-                          ? "bg-white/90 font-semibold text-brand-blue shadow-sm ring-1 ring-indigo-900/5"
-                          : "font-medium text-slate-600 hover:bg-white/80 hover:text-brand-blue hover:shadow-sm",
+                {group.links.map((link) => {
+                  const className = cn(
+                    "flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-1.5 text-sm transition-all",
+                    !link.external && isActive(pathname, link.href)
+                      ? "bg-white/90 font-semibold text-brand-blue shadow-sm ring-1 ring-indigo-900/5"
+                      : "font-medium text-slate-600 hover:bg-white/80 hover:text-brand-blue hover:shadow-sm",
+                  );
+
+                  return (
+                    <li key={link.href}>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          tabIndex={open ? undefined : -1}
+                          className={className}
+                        >
+                          {link.label}
+                          <ArrowUpRight className="h-3 w-3 flex-shrink-0 text-slate-400" />
+                        </a>
+                      ) : (
+                        <Link href={link.href} tabIndex={open ? undefined : -1} className={className}>
+                          {link.label}
+                        </Link>
                       )}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

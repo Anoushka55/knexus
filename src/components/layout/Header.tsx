@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, Search, Sparkles, X } from "lucide-react";
+import { ArrowUpRight, Menu, Search, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NavMenu } from "@/components/layout/NavMenu";
 import { NAV_ITEMS, isActive } from "@/components/layout/navigation";
@@ -93,21 +93,34 @@ export function Header() {
                     </p>
                   )}
                   <ul className="space-y-1">
-                    {group.links.map((link) => (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className={cn(
-                            "block py-1 text-sm",
-                            isActive(pathname, link.href)
-                              ? "font-semibold text-brand-blue"
-                              : "text-slate-600",
+                    {group.links.map((link) => {
+                      const className = cn(
+                        "flex items-center gap-1.5 py-1 text-sm",
+                        !link.external && isActive(pathname, link.href)
+                          ? "font-semibold text-brand-blue"
+                          : "text-slate-600",
+                      );
+
+                      return (
+                        <li key={link.href}>
+                          {link.external ? (
+                            <a
+                              href={link.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={className}
+                            >
+                              {link.label}
+                              <ArrowUpRight className="h-3 w-3 flex-shrink-0 text-slate-400" />
+                            </a>
+                          ) : (
+                            <Link href={link.href} className={className}>
+                              {link.label}
+                            </Link>
                           )}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}

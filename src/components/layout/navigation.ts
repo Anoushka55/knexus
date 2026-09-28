@@ -5,7 +5,12 @@
  * moved, change it here and both the desktop menus and the mobile panel follow.
  */
 
-export type NavLink = { label: string; href: string };
+export type NavLink = {
+  label: string;
+  href: string;
+  /** Opens in a new tab. Set for anything hosted outside this app. */
+  external?: boolean;
+};
 
 export type NavGroup = {
   /** Column heading inside a dropdown; omitted for a single ungrouped list. */
@@ -97,8 +102,33 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-  // No sub-pages of its own, so it stays a plain link rather than an empty menu.
-  { label: "TMT Ontology", href: "/tmt-ontology" },
+  {
+    label: "TMT Ontology",
+    href: "/tmt-ontology",
+    groups: [
+      {
+        label: "Ontology",
+        links: [{ label: "Full graph", href: "/tmt-ontology" }],
+      },
+      {
+        // The two apps the ontology page already launches. They live on their
+        // own domains, so they open in a new tab rather than replacing this one.
+        label: "Connected apps",
+        links: [
+          {
+            label: "Billing Assistant",
+            href: "https://telcobillingagent.ezdatamunch.com/",
+            external: true,
+          },
+          {
+            label: "CFO Intelligence",
+            href: "https://kpmgcfoagents.ezdatamunch.com/",
+            external: true,
+          },
+        ],
+      },
+    ],
+  },
   {
     label: "AI Stack",
     href: "/ai-stack",
