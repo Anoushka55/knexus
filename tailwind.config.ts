@@ -8,6 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      // AI Operations Control Tower agent theme (scoped under .aiops-theme —
+      // see src/app/agents/aiops-sentry/aiops-theme.css). Namespaced so it
+      // never collides with the rest of the marketplace's styling.
+      borderRadius: {
+        "aiops-sm": "var(--radius-sm)",
+        "aiops-md": "var(--radius-md)",
+        "aiops-lg": "var(--radius-lg)",
+        "aiops-xl": "var(--radius-xl)",
+      },
       colors: {
         brand: {
           blue: "#1a3a8f",       // Knexus Blue — primary CTA, .AI accent, links, badges
@@ -18,9 +30,39 @@ const config: Config = {
           green: "#16a34a",       // Knexus Green — AI Stack accents, highlights
           "green-dark": "#15803d",
         },
-      },
-      fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        popover: "var(--popover)",
+        "popover-foreground": "var(--popover-foreground)",
+        primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
+        secondary: "var(--secondary)",
+        "secondary-foreground": "var(--secondary-foreground)",
+        muted: "var(--muted)",
+        "muted-foreground": "var(--muted-foreground)",
+        accent: "var(--accent)",
+        "accent-foreground": "var(--accent-foreground)",
+        destructive: "var(--destructive)",
+        "destructive-foreground": "var(--destructive-foreground)",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        navy: "var(--navy)",
+        "navy-foreground": "var(--navy-foreground)",
+        blue: "var(--blue)",
+        teal: "var(--teal)",
+        "teal-foreground": "var(--teal-foreground)",
+        crimson: "var(--crimson)",
+        amber: "var(--amber)",
+        success: "var(--success)",
+        surface: "var(--surface)",
+        sidebar: "var(--sidebar)",
+        "sidebar-foreground": "var(--sidebar-foreground)",
+        "sidebar-accent": "var(--sidebar-accent)",
+        "sidebar-accent-foreground": "var(--sidebar-accent-foreground)",
+        "sidebar-border": "var(--sidebar-border)",
       },
       animation: {
         "float-slow": "float 6s ease-in-out infinite",

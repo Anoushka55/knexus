@@ -100,7 +100,7 @@ export const agents: AgentData[] = [
       "Monitor network and IT operations in real time, predicting incidents before they impact service.",
     categories: ["IT", "Operations"],
     accuracy: 96,
-    accessLink: "https://www.knexus.space/agents/aiops-sentry/dashboard",
+    accessLink: "/agents/aiops-sentry/console",
     videoUrl: null,
     integrations: [
       { name: "ServiceNow", bgColor: "bg-green-100", textColor: "text-green-700", letter: "SN" },
