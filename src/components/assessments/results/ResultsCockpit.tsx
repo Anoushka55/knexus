@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -21,6 +22,7 @@ import { GroupBars } from "../charts/GroupBars";
 import { MaturityRadar } from "../charts/MaturityRadar";
 import { CapabilityHeatmap } from "../charts/CapabilityHeatmap";
 import { CHART } from "../charts/palette";
+import { DetailOverlay, type Selection } from "./DetailOverlay";
 
 /**
  * The executive cockpit: the whole result inside one desktop viewport.
@@ -35,6 +37,7 @@ import { CHART } from "../charts/palette";
  */
 export function ResultsCockpit() {
   const { definition, input, outcome, opportunities } = useAssessmentRun();
+  const [selection, setSelection] = useState<Selection>(null);
   const scope = definition.scopes.find((s) => s.id === input.scopeId);
   const reportHref = `/assessments/${definition.slug}/results/report`;
 
@@ -128,13 +131,20 @@ export function ResultsCockpit() {
       {/* The two rows that absorb whatever height is left. */}
       <div className="grid min-h-0 flex-[3] grid-cols-1 gap-3 xl:grid-cols-3">
         <Panel title="Maturity by Capability Group">
-          <GroupBars groups={outcome.groups} />
+          <GroupBars
+            groups={outcome.groups}
+            onSelect={(id) => setSelection({ kind: "group", id })}
+          />
         </Panel>
         <Panel title="Capability Maturity">
           <MaturityRadar groups={outcome.groups} compact />
         </Panel>
         <Panel title="Capability Heatmap">
-          <CapabilityHeatmap capabilities={outcome.capabilities} compact />
+          <CapabilityHeatmap
+            capabilities={outcome.capabilities}
+            compact
+            onSelect={(id) => setSelection({ kind: "capability", id })}
+          />
         </Panel>
       </div>
 
@@ -146,7 +156,12 @@ export function ResultsCockpit() {
         >
           <ol className="space-y-2">
             {outcome.strengths.slice(0, 4).map((s, i) => (
-              <li key={s.capability.id} className="flex gap-2.5">
+              <li key={s.capability.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelection({ kind: "capability", id: s.capability.id })}
+                  className="-mx-1.5 flex w-full gap-2.5 rounded-lg px-1.5 py-0.5 text-left transition-colors hover:bg-slate-50"
+                >
                 <Rank index={i} tone="green" />
                 <div className="min-w-0">
                   <p className="truncate text-[0.82rem] font-semibold text-slate-800">
@@ -156,6 +171,7 @@ export function ResultsCockpit() {
                     Business {s.business} · Agentic {s.agentic} — {s.group.shortLabel}
                   </p>
                 </div>
+                </button>
               </li>
             ))}
           </ol>
@@ -168,7 +184,12 @@ export function ResultsCockpit() {
         >
           <ol className="space-y-2">
             {outcome.gaps.slice(0, 4).map((g, i) => (
-              <li key={g.capability.id} className="flex gap-2.5">
+              <li key={g.capability.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelection({ kind: "capability", id: g.capability.id })}
+                  className="-mx-1.5 flex w-full gap-2.5 rounded-lg px-1.5 py-0.5 text-left transition-colors hover:bg-slate-50"
+                >
                 <Rank index={i} tone="amber" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[0.82rem] font-semibold text-slate-800">
@@ -181,6 +202,7 @@ export function ResultsCockpit() {
                     </span>
                   </p>
                 </div>
+                </button>
               </li>
             ))}
           </ol>
@@ -226,6 +248,14 @@ export function ResultsCockpit() {
           </ul>
         </Panel>
       </div>
+
+      <DetailOverlay
+        selection={selection}
+        outcome={outcome}
+        rubric={definition.rubric}
+        onSelect={setSelection}
+        onClose={() => setSelection(null)}
+      />
 
       <p className="flex-none truncate text-[0.65rem] text-slate-400" title={outcome.benchmark.disclosure}>
         {outcome.benchmark.disclosure}

@@ -9,10 +9,13 @@ import type { GroupResult } from "@/lib/assessments/scoring";
 export function GroupBars({
   groups,
   drillHref,
+  onSelect,
 }: {
   groups: GroupResult[];
   /** Given a group id, where the chevron goes. Omit to render them inert. */
   drillHref?: (groupId: string) => string;
+  /** Opens the group in an overlay instead of navigating. Wins over drillHref. */
+  onSelect?: (groupId: string) => void;
 }) {
   return (
     <div>
@@ -46,7 +49,16 @@ export function GroupBars({
 
           return (
             <li key={g.group.id}>
-              {drillHref ? (
+              {onSelect ? (
+                <button
+                  type="button"
+                  onClick={() => onSelect(g.group.id)}
+                  className="flex w-full items-center gap-4 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-slate-50"
+                >
+                  {row}
+                  <ChevronRight className="h-4 w-4 flex-shrink-0 text-slate-300" />
+                </button>
+              ) : drillHref ? (
                 <Link
                   href={drillHref(g.group.id)}
                   className="flex items-center gap-4 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-50"

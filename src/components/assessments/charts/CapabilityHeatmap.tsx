@@ -16,9 +16,12 @@ export function CapabilityHeatmap({
   capabilities,
   title,
   compact = false,
+  onSelect,
 }: {
   capabilities: CapabilityResult[];
   title?: string;
+  /** Opens the capability in an overlay when a row is clicked. */
+  onSelect?: (capabilityId: string) => void;
   /** Tighter rows and no caption, for the fixed-height cockpit. */
   compact?: boolean;
 }) {
@@ -58,7 +61,11 @@ export function CapabilityHeatmap({
           {capabilities.map((c) => {
             const value = scale === "business" ? c.business : c.agentic;
             return (
-              <tr key={c.capability.id}>
+              <tr
+                key={c.capability.id}
+                onClick={onSelect ? () => onSelect(c.capability.id) : undefined}
+                className={onSelect ? "cursor-pointer hover:bg-slate-50" : undefined}
+              >
                 <td className="truncate pr-3 text-slate-600" title={c.capability.label}>
                   {c.capability.label}
                 </td>
