@@ -3,7 +3,8 @@
 import { MotionConfig } from "framer-motion";
 import { Printer } from "lucide-react";
 import { ResultsHeader } from "@/components/assessments/ResultsHeader";
-import { ExecutiveSummary } from "@/components/assessments/results/ExecutiveSummary";
+import { ResultsDashboard } from "@/components/assessments/results/ResultsDashboard";
+import { CapabilityDetail } from "@/components/assessments/results/CapabilityDetail";
 import { GapAnalysis } from "@/components/assessments/results/GapAnalysis";
 import { Recommendations } from "@/components/assessments/results/Recommendations";
 import { Roadmap } from "@/components/assessments/results/Roadmap";
@@ -11,22 +12,23 @@ import { StepFooter } from "@/components/assessments/StepFooter";
 import { useAssessmentRun } from "@/components/assessments/AssessmentRunContext";
 
 /**
- * The whole result as one document.
+ * The long form.
  *
- * A route rather than a tab, because it composes every section at once with
- * motion disabled and print styles applied — as a tab it would have to
- * duplicate the section tree instead of reusing it. There is no PDF library in
- * this project, so the export is the browser's own Save as PDF over
- * print-specific CSS in globals.css.
+ * The dashboard at /results is the one-screen answer; everything that would
+ * have made it scroll lives here instead — every capability, every gap with
+ * both scales, the full recommendation list and the sequenced roadmap.
+ *
+ * There is no PDF library in this project, so the export is the browser's own
+ * Save as PDF over the print rules in globals.css.
  */
 export default function ReportPage() {
   const { definition } = useAssessmentRun();
 
   return (
-    // Entrance animations would otherwise capture mid-fade in the printed page.
+    // Entrance animations would otherwise be captured mid-fade when printing.
     <MotionConfig reducedMotion="always">
       <div className="assessment-report">
-        <div className="mb-6 flex justify-end print:hidden">
+        <div className="mb-5 flex justify-end print:hidden">
           <button
             type="button"
             onClick={() => window.print()}
@@ -40,11 +42,15 @@ export default function ReportPage() {
         <ResultsHeader
           eyebrow="Assessment report"
           title={definition.title}
-          lede="The complete result: scores, gaps, recommended agents and the sequenced roadmap."
+          lede="The complete result: scores, every capability, the full gap analysis, recommended agents and the sequenced roadmap."
         />
 
-        <div className="space-y-10">
-          <ExecutiveSummary />
+        <ResultsDashboard />
+
+        <div className="mt-10 space-y-10">
+          <ReportSection title="Every capability">
+            <CapabilityDetail />
+          </ReportSection>
 
           <ReportSection title="Gap analysis">
             <GapAnalysis />
@@ -60,7 +66,7 @@ export default function ReportPage() {
         </div>
 
         <StepFooter
-          back={{ href: `/assessments/${definition.slug}/results/roadmap`, label: "Back to roadmap" }}
+          back={{ href: `/assessments/${definition.slug}/results`, label: "Back to results" }}
         />
       </div>
     </MotionConfig>

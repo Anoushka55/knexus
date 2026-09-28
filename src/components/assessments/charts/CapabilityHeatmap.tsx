@@ -81,7 +81,7 @@ export function CapabilityHeatmap({
       </table>
 
       <figcaption className="mt-2 text-[0.7rem] text-slate-400">
-        Shaded to the level reached. Target is shown on the Gap Analysis view.
+        Shaded to the level reached. Targets and gaps are in the full report.
       </figcaption>
     </figure>
   );

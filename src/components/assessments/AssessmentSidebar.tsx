@@ -70,36 +70,6 @@ export function AssessmentSidebar({
                   {step.label}
                 </Link>
               )}
-
-              {isActive && step.children && (
-                <ul className="mb-2 ml-[1.35rem] mt-1 space-y-0.5 border-l border-slate-200 pl-4">
-                  {step.children.map((child) => {
-                    const childActive = pathname === child.href;
-                    return (
-                      <li key={child.href}>
-                        <Link
-                          href={child.href}
-                          aria-current={childActive ? "page" : undefined}
-                          className={cn(
-                            "flex items-center gap-2 rounded-md py-1.5 pl-2 pr-2 text-[0.82rem] transition-colors",
-                            childActive
-                              ? "font-semibold text-brand-blue"
-                              : "font-medium text-slate-500 hover:text-brand-blue",
-                          )}
-                        >
-                          <span
-                            className={cn(
-                              "h-1.5 w-1.5 flex-shrink-0 rounded-full",
-                              childActive ? "bg-brand-blue" : "bg-slate-300",
-                            )}
-                          />
-                          {child.label}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
             </li>
           );
         })}

@@ -11,27 +11,22 @@ import type { AssessmentDefinition } from "./types";
 export interface AssessmentStep {
   href: string;
   label: string;
-  /** Results sub-views. Rendered only while that step is the active one. */
-  children?: { href: string; label: string }[];
 }
 
+/**
+ * Three flat steps.
+ *
+ * Results used to fan out into six sub-views, which meant the one screen
+ * people actually want — scores, gaps and the agents that close them — was
+ * spread across five pages and a second layer of navigation. It is now a
+ * single dashboard, and the long-form detail lives in the report.
+ */
 export function stepsFor(definition: AssessmentDefinition): AssessmentStep[] {
   const base = `/assessments/${definition.slug}`;
   return [
     { href: base, label: "Industry & Scope" },
     { href: `${base}/assessment`, label: "Assessment" },
-    {
-      href: `${base}/results`,
-      label: "Results",
-      children: [
-        { href: `${base}/results`, label: "Executive Summary" },
-        { href: `${base}/results/capabilities`, label: "Capability View" },
-        { href: `${base}/results/gaps`, label: "Gap Analysis" },
-        { href: `${base}/results/recommendations`, label: "Recommendations" },
-        { href: `${base}/results/roadmap`, label: "Roadmap" },
-        { href: `${base}/results/report`, label: "Download Report" },
-      ],
-    },
+    { href: `${base}/results`, label: "Results" },
   ];
 }
 
