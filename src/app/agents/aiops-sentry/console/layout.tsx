@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Home,
   LayoutGrid,
   AlertOctagon,
   Network,
@@ -58,7 +59,11 @@ function AppLayout({ children }: { children: React.ReactNode }) {
         onMouseLeave={() => setHover(false)}
         className={`${hover ? "w-60" : "w-14"} transition-[width] duration-200 bg-navy text-navy-foreground border-r border-sidebar-border flex flex-col sticky top-0 h-screen z-30`}
       >
-        <div className="h-14 flex items-center px-3 border-b border-sidebar-border">
+        <Link
+          href="/"
+          title="Back to K-Nexus.AI"
+          className="h-14 flex items-center px-3 border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
+        >
           <div className="w-8 h-8 shrink-0">
             <svg viewBox="0 0 32 32" width={32} height={32}>
               <rect x="3" y="3" width="11" height="11" fill="#fff" />
@@ -72,9 +77,20 @@ function AppLayout({ children }: { children: React.ReactNode }) {
               AI Operations
             </span>
           )}
-        </div>
+        </Link>
 
         <nav className="flex-1 py-3 overflow-y-auto">
+          <div className="pb-3 mb-3 border-b border-sidebar-border">
+            <Link
+              href="/"
+              title="Back to K-Nexus.AI"
+              className="flex items-center h-9 px-3 mx-2 rounded-aiops-sm text-[13px] text-white/70 hover:bg-sidebar-accent hover:text-white"
+            >
+              <Home className="w-4 h-4 shrink-0" />
+              {hover && <span className="ml-3 truncate">Back to K-Nexus</span>}
+            </Link>
+          </div>
+
           {nav.map((item) => {
             const active = path?.startsWith(item.to) ?? false;
             const Icon = item.icon;
