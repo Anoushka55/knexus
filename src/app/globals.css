@@ -83,3 +83,24 @@
     margin: 14mm;
   }
 }
+
+/*
+ * The assessment results cockpit.
+ *
+ * The page has to resolve inside one desktop viewport, which means `main`
+ * cannot keep its min-height and the footer cannot sit below it. Both live in
+ * an ancestor layout that is prerendered, so this is driven from CSS off a
+ * marker the cockpit renders — deterministic at first paint, with no hydration
+ * flash and no layout shift.
+ */
+@media (min-width: 1024px) {
+  body:has([data-cockpit]) main {
+    height: calc(100vh - 4rem);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  body:has([data-cockpit]) footer {
+    display: none;
+  }
+}

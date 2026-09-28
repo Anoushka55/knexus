@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AssessmentRunProvider } from "@/components/assessments/AssessmentRunContext";
 import { AssessmentShell } from "@/components/assessments/AssessmentShell";
 import { assessmentSlugs, getAssessment } from "@/data/assessments/registry";
@@ -24,18 +23,9 @@ export default function AssessmentLayout({
   if (!definition) notFound();
 
   return (
+    // The breadcrumb lives inside the shell, which is a client component and so
+    // can drop it on the cockpit route where the vertical space is spoken for.
     <AssessmentRunProvider definition={definition}>
-      <div className="border-b border-slate-200 bg-white print:hidden">
-        <div className="mx-auto max-w-7xl px-6 pt-4">
-          <Breadcrumb
-            crumbs={[
-              { label: "Marketplace", href: "/" },
-              { label: "Assessments", href: "/assessments" },
-              { label: definition.title },
-            ]}
-          />
-        </div>
-      </div>
       <AssessmentShell>{children}</AssessmentShell>
     </AssessmentRunProvider>
   );

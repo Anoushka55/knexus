@@ -1,24 +1,11 @@
 "use client";
 
-import { ResultsHeader } from "@/components/assessments/ResultsHeader";
-import { ResultsDashboard } from "@/components/assessments/results/ResultsDashboard";
-import { StepFooter } from "@/components/assessments/StepFooter";
-import { useAssessmentRun } from "@/components/assessments/AssessmentRunContext";
+import { ResultsCockpit } from "@/components/assessments/results/ResultsCockpit";
 
+/**
+ * The cockpit owns its own full-height layout, so this route renders it bare —
+ * no header band, no step footer, nothing that could push it past one viewport.
+ */
 export default function ResultsPage() {
-  const { definition } = useAssessmentRun();
-  return (
-    <div>
-      <ResultsHeader
-        eyebrow="Assessment results"
-        title={definition.title}
-        showReportLink
-      />
-      <ResultsDashboard />
-      <StepFooter
-        back={{ href: `/assessments/${definition.slug}/assessment`, label: "Back to assessment" }}
-        next={{ href: `/assessments/${definition.slug}/results/report`, label: "Open the full report" }}
-      />
-    </div>
-  );
+  return <ResultsCockpit />;
 }

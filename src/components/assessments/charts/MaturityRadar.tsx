@@ -19,7 +19,14 @@ const CY = SIZE / 2;
 const R = SIZE / 2 - 56;
 const MAX = 5;
 
-export function MaturityRadar({ groups }: { groups: GroupResult[] }) {
+export function MaturityRadar({
+  groups,
+  compact = false,
+}: {
+  groups: GroupResult[];
+  /** Fills its container and drops the data table, for the fixed-height cockpit. */
+  compact?: boolean;
+}) {
   const n = groups.length;
   // Axis 0 at twelve o'clock, then clockwise.
   const angle = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / n;
@@ -41,7 +48,7 @@ export function MaturityRadar({ groups }: { groups: GroupResult[] }) {
   ];
 
   return (
-    <figure className="m-0">
+    <figure className={compact ? "m-0 flex h-full flex-col" : "m-0"}>
       <div className="flex flex-wrap items-center justify-end gap-4 pb-2">
         {series.map((s) => (
           <span key={s.key} className="flex items-center gap-1.5 text-xs font-medium text-slate-600">
@@ -53,7 +60,7 @@ export function MaturityRadar({ groups }: { groups: GroupResult[] }) {
 
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
-        className="mx-auto h-auto w-full max-w-[340px]"
+        className={compact ? "mx-auto h-full w-full" : "mx-auto h-auto w-full max-w-[340px]"}
         role="img"
         aria-label="Maturity by capability group, business and agentic scales"
       >
@@ -160,6 +167,7 @@ export function MaturityRadar({ groups }: { groups: GroupResult[] }) {
         })}
       </svg>
 
+      {!compact && (
       <details className="mt-3 text-xs text-slate-500">
         <summary className="cursor-pointer font-semibold hover:text-brand-blue">
           View as a table
@@ -187,6 +195,7 @@ export function MaturityRadar({ groups }: { groups: GroupResult[] }) {
           </tbody>
         </table>
       </details>
+      )}
     </figure>
   );
 }

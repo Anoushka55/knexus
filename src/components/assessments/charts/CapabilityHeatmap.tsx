@@ -15,9 +15,12 @@ import { CHART, rampFor } from "./palette";
 export function CapabilityHeatmap({
   capabilities,
   title,
+  compact = false,
 }: {
   capabilities: CapabilityResult[];
   title?: string;
+  /** Tighter rows and no caption, for the fixed-height cockpit. */
+  compact?: boolean;
 }) {
   const [scale, setScale] = useState<Scale>("business");
   const ramp = rampFor(scale);
@@ -64,7 +67,7 @@ export function CapabilityHeatmap({
                   return (
                     <td key={level} className="px-0.5">
                       <div
-                        className="h-6 rounded"
+                        className={compact ? "h-4 rounded-sm" : "h-6 rounded"}
                         title={`${c.capability.label}: level ${value}`}
                         style={{
                           backgroundColor: filled ? ramp[level - 1] : CHART.track,
@@ -80,9 +83,11 @@ export function CapabilityHeatmap({
         </tbody>
       </table>
 
+      {!compact && (
       <figcaption className="mt-2 text-[0.7rem] text-slate-400">
         Shaded to the level reached. Targets and gaps are in the full report.
       </figcaption>
+      )}
     </figure>
   );
 }
