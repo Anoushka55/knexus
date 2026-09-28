@@ -114,12 +114,12 @@ function AppLayout({ children }: { children: React.ReactNode }) {
             </span>
           </div>
 
-          <div className="flex-1 flex justify-center min-w-0">
-            <div className="flex items-center gap-2">
+          <div className="flex-1 min-w-0 flex justify-center overflow-hidden">
+            <div className="flex items-center gap-2 min-w-0 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setDemoMode(!demoMode)}
                 title="Curated dataset with the workshop scenarios in focus"
-                className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-xs transition-colors ${
+                className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-xs shrink-0 whitespace-nowrap transition-colors ${
                   demoMode
                     ? "bg-navy text-white border-navy"
                     : "bg-background text-muted-foreground border-border hover:text-foreground"
@@ -129,10 +129,10 @@ function AppLayout({ children }: { children: React.ReactNode }) {
               </button>
 
               {demoMode && (
-                <div className="inline-flex items-center bg-background border border-border rounded-full p-0.5">
+                <div className="inline-flex items-center bg-background border border-border rounded-full p-0.5 shrink-0">
                   <button
                     onClick={() => setScenario("all")}
-                    className={`px-2.5 h-6 text-[11px] rounded-full transition-colors ${
+                    className={`px-2.5 h-6 text-[11px] rounded-full whitespace-nowrap transition-colors ${
                       scenario === "all"
                         ? "bg-navy text-white"
                         : "text-muted-foreground hover:text-foreground"
