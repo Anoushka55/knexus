@@ -9,7 +9,7 @@ import { solutionIconMap } from "@/components/solutions/icon-map";
 import { solutions } from "@/data/tmtSolutions";
 
 interface Props {
-  params: { id: string; playId: string };
+  params: Promise<{ id: string; playId: string }>;
 }
 
 export function generateStaticParams() {
@@ -18,9 +18,10 @@ export function generateStaticParams() {
   );
 }
 
-export default function PlayDetailPage({ params }: Props) {
-  const solution = solutions.find((s) => s.id === params.id);
-  const play = solution?.plays.find((p) => p.id === params.playId);
+export default async function PlayDetailPage({ params }: Props) {
+  const { id, playId } = await params;
+  const solution = solutions.find((s) => s.id === id);
+  const play = solution?.plays.find((p) => p.id === playId);
   if (!solution || !play) notFound();
 
   const Icon = solutionIconMap[solution.iconName];

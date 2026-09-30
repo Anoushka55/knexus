@@ -1,5 +1,15 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Pins the workspace root to this project. Without it, Next.js walks up
+  // looking for lockfiles and can latch onto an unrelated one elsewhere on
+  // the machine (e.g. a stray package-lock.json in the user's home
+  // directory), which breaks page resolution during the build.
+  outputFileTracingRoot: __dirname,
   images: {
     domains: ["upload.wikimedia.org"],
   },

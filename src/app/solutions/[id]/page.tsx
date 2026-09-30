@@ -14,15 +14,16 @@ import { Reveal } from "@/components/solutions/Reveal";
 import { solutions } from "@/data/tmtSolutions";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export function generateStaticParams() {
   return solutions.map((s) => ({ id: s.id }));
 }
 
-export default function SolutionDetailPage({ params }: Props) {
-  const solution = solutions.find((s) => s.id === params.id);
+export default async function SolutionDetailPage({ params }: Props) {
+  const { id } = await params;
+  const solution = solutions.find((s) => s.id === id);
   if (!solution) notFound();
 
   return (

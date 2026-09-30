@@ -30,6 +30,6 @@ export function decodeUser(token?: string): SessionUser | null {
 // which runs on the Edge runtime and decodes the cookie manually instead).
 export async function getSessionUser(): Promise<SessionUser | null> {
   const { cookies } = await import("next/headers");
-  const token = cookies().get(COOKIE_NAME)?.value;
+  const token = (await cookies()).get(COOKIE_NAME)?.value;
   return decodeUser(token);
 }

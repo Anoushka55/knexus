@@ -27,15 +27,16 @@ const verticalCategoryMap: Record<string, string[]> = {
 };
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export function generateStaticParams() {
   return verticals.map((v) => ({ id: v.id }));
 }
 
-export default function VerticalPage({ params }: Props) {
-  const vertical = verticals.find((v) => v.id === params.id);
+export default async function VerticalPage({ params }: Props) {
+  const { id } = await params;
+  const vertical = verticals.find((v) => v.id === id);
   if (!vertical) notFound();
 
   const Icon = iconMap[vertical.iconName] ?? TrendingUp;

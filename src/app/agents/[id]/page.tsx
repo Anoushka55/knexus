@@ -11,7 +11,7 @@ import { getSessionUser } from "@/lib/auth";
 import { agentSupportsSso } from "@/lib/sso";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export function generateStaticParams() {
@@ -19,7 +19,8 @@ export function generateStaticParams() {
 }
 
 export default async function AgentDetailPage({ params }: Props) {
-  const agent = agents.find((a) => a.id === params.id);
+  const { id } = await params;
+  const agent = agents.find((a) => a.id === id);
   if (!agent) notFound();
 
   const user = await getSessionUser();

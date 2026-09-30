@@ -11,16 +11,17 @@ import { getSessionUser } from "@/lib/auth";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: { denied?: string };
+  searchParams?: Promise<{ denied?: string }>;
 }) {
   const user = await getSessionUser();
   const isRestricted = user?.role === "restricted";
+  const resolvedSearchParams = await searchParams;
 
   return (
     <>
       <Header />
       <main>
-        {searchParams?.denied === "forge" && (
+        {resolvedSearchParams?.denied === "forge" && (
           <div className="mx-auto max-w-7xl px-6 pt-4">
             <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
               Agent Forge isn&apos;t available on this account.

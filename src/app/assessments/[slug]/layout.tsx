@@ -12,14 +12,15 @@ export function generateStaticParams() {
  * survive the whole flow and lets navigating between the six results views
  * reuse the already-computed outcome.
  */
-export default function AssessmentLayout({
+export default async function AssessmentLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const definition = getAssessment(params.slug);
+  const { slug } = await params;
+  const definition = getAssessment(slug);
   if (!definition) notFound();
 
   return (
