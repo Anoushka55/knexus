@@ -174,7 +174,7 @@ export const agents: AgentData[] = [
   },
   {
     id: "enterprise-architecture-agent",
-    title: "Enterprise Architecture Agent",
+    title: "Enterprise Architecture",
     description:
       "Analyse and optimise your enterprise architecture by mapping capabilities, identifying redundancies, and generating actionable modernisation roadmaps.",
     categories: ["IT", "Operations"],
@@ -345,7 +345,7 @@ export const agents: AgentData[] = [
   },
   {
     id: "dcf-agent",
-    title: "DCF Agent",
+    title: "DCF",
     description:
       "A DCF model estimates a company's intrinsic value by forecasting its future cash flows and discounting them to present value.",
     categories: ["Finance"],
@@ -462,7 +462,7 @@ export const agents: AgentData[] = [
   },
   {
     id: "next-best-action-agent",
-    title: "Next Best Action Agent",
+    title: "Next Best Action",
     description:
       "Recommend the single best next action for each customer in real time by blending intent signals, journey stage, and business rules.",
     categories: ["Customer Experience", "Sales"],
@@ -500,7 +500,7 @@ export const agents: AgentData[] = [
   },
   {
     id: "demand-planning-agent",
-    title: "Demand Planning Agent",
+    title: "Demand Planning",
     description:
       "Forecast demand and align supply plans across products and regions using AI-driven trend and seasonality analysis.",
     categories: ["Operations", "Finance"],
@@ -538,7 +538,7 @@ export const agents: AgentData[] = [
   },
   {
     id: "kpmg-dice",
-    title: "DICE Agent",
+    title: "DICE",
     description:
       "An AI intelligence layer on Salesforce/Agentforce that listens to every customer touchpoint — calls, chats, site visits, payments — and writes the real pipeline status back into the CRM in real time.",
     categories: ["Sales", "Customer Experience", "Marketing"],
