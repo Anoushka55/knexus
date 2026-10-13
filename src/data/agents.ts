@@ -204,6 +204,45 @@ export const agents: AgentData[] = [
     subAgents: [],
   },
   {
+    id: "anti-piracy-command-center",
+    title: "Anti-Piracy Command Center",
+    description:
+      "Run the full IP-protection enforcement loop — from discovery and investigation through evidence, legal approval, takedown, and reappearance monitoring.",
+    categories: ["Legal", "Operations"],
+    accuracy: 95,
+    accessLink: "https://antipiracy-eosin.vercel.app/",
+    videoUrl: null,
+    integrations: [],
+    scope: {
+      level: 4,
+      type: "Enterprise",
+      summary: "Enterprise-wide intelligence",
+      detail:
+        "Orchestrates the closed enforcement loop — discover, investigate, validate, evidence, legal approval, enforce, track, escalate, monitor, reappearance, reopen, close, learn — across connectors, case management, and legal workflows.",
+    },
+    autonomy: {
+      level: 2,
+      type: "Guided",
+      summary: "User-approved execution",
+      detail:
+        "AI classifies, prioritises, and scores similarity, but every legal notice and high-risk case closure requires human approval through a 4-gate validation workflow.",
+    },
+    capabilities: [
+      "Multi-connector piracy discovery (Telegram, web, marketplace, cloud storage)",
+      "SHA-256 hash-verified evidence vault with chain of custody",
+      "4-gate case validation: rights, evidence, legal, risk",
+      "Legal takedown notice drafting, approval, and dispatch",
+      "Reappearance monitoring with automatic case reopening",
+      "Role-based dashboards for 6 personas via RBAC",
+    ],
+    worksWithModels: ["claude-sonnet-4-6"],
+    subAgents: [
+      { name: "Discovery Connector", description: "Surfaces infringing content findings across monitored platforms." },
+      { name: "Investigation Analyst", description: "Reviews and confirms infringement before a case is opened." },
+      { name: "Radar Monitor", description: "Watches closed cases for pirated content reappearing after takedown." },
+    ],
+  },
+  {
     id: "legacy-tech-modernization",
     title: "Legacy Tech Modernization",
     description:
