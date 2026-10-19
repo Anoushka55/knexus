@@ -318,7 +318,7 @@ export const agents: AgentData[] = [
     description:
       "A unified observability command center for engineering teams — correlating logs, metrics, traces, and deployments into one operating picture, with anomalies triaged before they page anyone.",
     categories: ["IT", "Operations"],
-    accessLink: "https://ontos-insight.vercel.app/",
+    accessLink: "/agents/engineering-observability-command-center/console",
     videoUrl: "/videos/engineering-observability-command-center.mp4",
     integrations: [],
     scope: {
