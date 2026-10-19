@@ -140,7 +140,7 @@ export const agents: AgentData[] = [
       "Score applications against business value and technical health to rationalise your technology portfolio.",
     categories: ["Finance", "IT"],
     accuracy: 95,
-    accessLink: "https://portfoliorationalization.vercel.app/",
+    accessLink: "/agents/portfolio-rationalization/console",
     videoUrl: null,
     integrations: [
       { name: "Jira", bgColor: "bg-blue-100", textColor: "text-blue-700", letter: "JR" },
@@ -283,7 +283,7 @@ export const agents: AgentData[] = [
     description:
       "A unified command center for the end-to-end customer journey — mapping every touchpoint, flagging drop-off points, and orchestrating next-best actions across channels.",
     categories: ["Customer Experience", "Sales"],
-    accessLink: "https://customer-journey-command-center-dice.vercel.app/",
+    accessLink: "/agents/kpmg-dice/console",
     videoUrl: null,
     integrations: [],
     scope: {
@@ -582,7 +582,7 @@ export const agents: AgentData[] = [
       "An AI intelligence layer on Salesforce/Agentforce that listens to every customer touchpoint — calls, chats, site visits, payments — and writes the real pipeline status back into the CRM in real time.",
     categories: ["Sales", "Customer Experience", "Marketing"],
     accuracy: 97,
-    accessLink: "https://l-t-sigma.vercel.app/",
+    accessLink: "/agents/kpmg-dice/console",
     videoUrl: null,
     integrations: [
       { name: "Salesforce", bgColor: "bg-blue-100", textColor: "text-blue-600", letter: "SF" },
