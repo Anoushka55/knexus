@@ -210,7 +210,7 @@ export const agents: AgentData[] = [
       "Run the full IP-protection enforcement loop — from discovery and investigation through evidence, legal approval, takedown, and reappearance monitoring.",
     categories: ["Legal", "Operations"],
     accuracy: 95,
-    accessLink: "https://antipiracy-eosin.vercel.app/",
+    accessLink: "/agents/anti-piracy-command-center/console",
     videoUrl: null,
     integrations: [],
     scope: {
