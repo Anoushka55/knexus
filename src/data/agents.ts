@@ -248,7 +248,7 @@ export const agents: AgentData[] = [
     description:
       "Assess legacy systems across the estate and generate a prioritised modernisation roadmap — replatform, refactor, or retire — with effort and risk scored for each path.",
     categories: ["IT", "Operations"],
-    accessLink: "https://connect-insight-modernize.vercel.app/",
+    accessLink: "/agents/legacy-tech-modernization/console",
     videoUrl: "/videos/legacy-tech-modernization.mp4",
     integrations: [],
     scope: {
@@ -353,7 +353,7 @@ export const agents: AgentData[] = [
     description:
       "Track and optimise AI and cloud spend across models, teams, and workloads — surfacing cost drivers, idle capacity, and rightsizing opportunities before the invoice lands.",
     categories: ["Finance", "IT"],
-    accessLink: null,
+    accessLink: "/agents/ai-spend-optimization/console",
     videoUrl: "/videos/ai-spend-optimization.mp4",
     integrations: [],
     scope: {
@@ -389,7 +389,7 @@ export const agents: AgentData[] = [
       "A DCF model estimates a company's intrinsic value by forecasting its future cash flows and discounting them to present value.",
     categories: ["Finance"],
     accuracy: 94,
-    accessLink: "https://data-center-43fpzipav-des4.vercel.app/dashboard",
+    accessLink: "/agents/dcf-agent/console",
     videoUrl: null,
     integrations: [
       { name: "SAP", bgColor: "bg-blue-100", textColor: "text-blue-700", letter: "SAP" },
@@ -428,7 +428,7 @@ export const agents: AgentData[] = [
       "Surface churn risk and growth opportunities by analysing customer signals across every touchpoint in real time.",
     categories: ["Customer Experience", "Sales"],
     accuracy: 98,
-    accessLink: "https://www.knexus.space/agents/leadership",
+    accessLink: "/agents/customer-intelligence-sentinal/console",
     videoUrl: "https://youtu.be/dmdhrNwZYFo",
     integrations: [
       { name: "Salesforce", bgColor: "bg-blue-100", textColor: "text-blue-600", letter: "SF" },
@@ -467,7 +467,7 @@ export const agents: AgentData[] = [
       "Intelligently classify and route support tickets to the right team with zero manual triage.",
     categories: ["Operations", "IT"],
     accuracy: 96,
-    accessLink: "https://www.knexus.space/agents/operations",
+    accessLink: "/agents/ticket-dispatch/console",
     videoUrl: "https://youtu.be/Q3c36D6SGeE",
     integrations: [
       { name: "ServiceNow", bgColor: "bg-green-100", textColor: "text-green-700", letter: "SN" },
@@ -506,7 +506,7 @@ export const agents: AgentData[] = [
       "Recommend the single best next action for each customer in real time by blending intent signals, journey stage, and business rules.",
     categories: ["Customer Experience", "Sales"],
     accuracy: 95,
-    accessLink: "https://nba-agent-five.vercel.app/",
+    accessLink: "/agents/next-best-action-agent/console",
     videoUrl: null,
     integrations: [],
     scope: {
@@ -625,7 +625,7 @@ export const agents: AgentData[] = [
       "Evaluate cloud infrastructure maturity and produce a prioritised modernisation roadmap.",
     categories: ["IT"],
     accuracy: 95,
-    accessLink: "https://maturity.leankloud.com/CMMA",
+    accessLink: "/agents/cloud-infra-assessment/console",
     videoUrl: "https://youtu.be/bqxq8Nalnng",
     integrations: [
       { name: "AWS", bgColor: "bg-yellow-100", textColor: "text-yellow-700", letter: "AW" },
@@ -664,7 +664,7 @@ export const agents: AgentData[] = [
       "Generate structured strategic analyses from market data to position your organisation for competitive advantage.",
     categories: ["Operations"],
     accuracy: 95,
-    accessLink: "https://aii-strategy-agent.vercel.app/",
+    accessLink: "/agents/strategy-navigator/console",
     videoUrl: "https://youtu.be/RxqNBxLx8H4",
     integrations: [
       { name: "Google Drive", bgColor: "bg-blue-100", textColor: "text-blue-600", letter: "GD" },
@@ -703,7 +703,7 @@ export const agents: AgentData[] = [
       "Benchmark your platform architecture against industry standards and surface capability gaps.",
     categories: ["IT"],
     accuracy: 93,
-    accessLink: null,
+    accessLink: "/agents/platform-calibre/console",
     videoUrl: null,
     integrations: [
       { name: "AWS", bgColor: "bg-yellow-100", textColor: "text-yellow-700", letter: "AW" },
@@ -741,7 +741,7 @@ export const agents: AgentData[] = [
       "Automate BSS transformation assessments and generate vendor-neutral modernisation blueprints.",
     categories: ["Operations"],
     accuracy: 92,
-    accessLink: null,
+    accessLink: "/agents/bss-modernization/console",
     videoUrl: null,
     integrations: [
       { name: "SAP", bgColor: "bg-blue-100", textColor: "text-blue-700", letter: "SAP" },
@@ -779,7 +779,7 @@ export const agents: AgentData[] = [
       "Identify cost-reduction levers across your technology estate with AI-driven spend analysis.",
     categories: ["Finance", "Operations"],
     accuracy: 95,
-    accessLink: null,
+    accessLink: "/agents/cost-optimization-ledger/console",
     videoUrl: null,
     integrations: [
       { name: "SAP", bgColor: "bg-blue-100", textColor: "text-blue-700", letter: "SAP" },
@@ -817,7 +817,7 @@ export const agents: AgentData[] = [
       "Conduct comprehensive enterprise capability assessments with structured scoring and gap analysis.",
     categories: ["Customer Experience"],
     accuracy: 94,
-    accessLink: null,
+    accessLink: "/agents/enterprise-assessment-prism/console",
     videoUrl: null,
     integrations: [
       { name: "Google Drive", bgColor: "bg-blue-100", textColor: "text-blue-600", letter: "GD" },
@@ -856,7 +856,7 @@ export const agents: AgentData[] = [
       "Navigate regulatory requirements and generate compliance gap reports with automated evidence mapping.",
     categories: ["Finance", "Operations"],
     accuracy: 93,
-    accessLink: null,
+    accessLink: "/agents/compliance-compass/console",
     videoUrl: null,
     integrations: [
       { name: "ServiceNow", bgColor: "bg-green-100", textColor: "text-green-700", letter: "SN" },
@@ -895,7 +895,7 @@ export const agents: AgentData[] = [
       "Redesign and automate business processes using AI-driven workflow analysis and optimisation.",
     categories: ["Operations"],
     accuracy: 92,
-    accessLink: null,
+    accessLink: "/agents/process-forge/console",
     videoUrl: null,
     integrations: [
       { name: "ServiceNow", bgColor: "bg-green-100", textColor: "text-green-700", letter: "SN" },
