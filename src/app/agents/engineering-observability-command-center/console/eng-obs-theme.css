@@ -1,0 +1,95 @@
+/*
+ * Design tokens for the Engineering Observability Command Center agent,
+ * ported from the standalone "engineering-occ" app. Scoped under
+ * .eng-obs-theme (rather than :root) so they never bleed into the rest of
+ * the K-Nexus marketplace, following the same pattern as the AI Operations
+ * agent's aiops-theme.css.
+ *
+ * The shadcn/ui token names (background, foreground, card, popover,
+ * primary, secondary, muted, accent, destructive, border, input, ring) are
+ * already registered as Tailwind color utilities at the repo root (added
+ * when the AI Operations agent was ported) — this file only supplies this
+ * agent's own values for them, scoped to this subtree. The kpmg.*, status.*
+ * and occ-surface.* groups below are newly added to tailwind.config.ts for
+ * this agent and are not used anywhere else in the marketplace.
+ */
+
+.eng-obs-theme {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222 47% 11%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --primary: hsl(222 100% 28%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+  --accent: hsl(210 40% 96%);
+  --accent-foreground: hsl(222 47% 11%);
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(222 84% 40%);
+
+  /* KPMG brand palette (source app's "kpmg" color group) */
+  --kpmg-blue-dark: #001b4f;
+  --kpmg-blue: #00338d;
+  --kpmg-blue-mid: #1e40af;
+  --kpmg-blue-hover: #1d4ed8;
+  --kpmg-blue-light: #e6eefa;
+  --kpmg-cyan: #00a3e0;
+  --kpmg-purple: #7c3aed;
+  --kpmg-teal: #0d9488;
+
+  /* Status palette (source app's "status" color group) */
+  --status-critical: #dc2626;
+  --status-warning: #ea580c;
+  --status-healthy: #16a34a;
+  --status-info: #2563eb;
+  --status-neutral: #6b7280;
+
+  /* Chrome surfaces (source app's "surface" color group, renamed
+     occ-surface here because the marketplace root already registers a
+     flat "surface" color for the AI Operations agent). */
+  --occ-surface-main: #ffffff;
+  --occ-surface-chrome: #f8fafc;
+  --occ-surface-border: #e2e8f0;
+}
+
+.eng-obs-theme * {
+  border-color: var(--border);
+}
+
+.eng-obs-theme .occ-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.eng-obs-theme .occ-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.eng-obs-theme .occ-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.eng-obs-theme .occ-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@keyframes eng-obs-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.eng-obs-fade-in {
+  animation: eng-obs-fade-in 0.4s ease-out;
+}

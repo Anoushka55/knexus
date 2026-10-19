@@ -63,6 +63,33 @@ const config: Config = {
         "sidebar-accent": "var(--sidebar-accent)",
         "sidebar-accent-foreground": "var(--sidebar-accent-foreground)",
         "sidebar-border": "var(--sidebar-border)",
+        // Engineering Observability Command Center agent theme (scoped under
+        // .eng-obs-theme — see
+        // src/app/agents/engineering-observability-command-center/console/eng-obs-theme.css).
+        // Namespaced so it never collides with the rest of the marketplace's
+        // styling or with the other agents' own color groups above.
+        kpmg: {
+          "blue-dark": "var(--kpmg-blue-dark)",
+          blue: "var(--kpmg-blue)",
+          "blue-mid": "var(--kpmg-blue-mid)",
+          "blue-hover": "var(--kpmg-blue-hover)",
+          "blue-light": "var(--kpmg-blue-light)",
+          cyan: "var(--kpmg-cyan)",
+          purple: "var(--kpmg-purple)",
+          teal: "var(--kpmg-teal)",
+        },
+        status: {
+          critical: "var(--status-critical)",
+          warning: "var(--status-warning)",
+          healthy: "var(--status-healthy)",
+          info: "var(--status-info)",
+          neutral: "var(--status-neutral)",
+        },
+        "occ-surface": {
+          main: "var(--occ-surface-main)",
+          chrome: "var(--occ-surface-chrome)",
+          border: "var(--occ-surface-border)",
+        },
       },
       animation: {
         "float-slow": "float 6s ease-in-out infinite",
@@ -86,7 +113,10 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  // tailwindcss-animate powers the animate-in/animate-out utilities used by
+  // the Radix UI primitives ported for the Engineering Observability
+  // Command Center agent's dialog/dropdown-menu/select/tooltip components.
+  plugins: [require("tailwindcss-animate")],
 };
 
 export default config;
