@@ -12,12 +12,15 @@
     "@anthropic-ai/sdk": "^0.98.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^1.16.0",
     "next": "^15.1.0",
+    "pdf-parse": "^1.1.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-force-graph-2d": "^1.29.1",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20",
