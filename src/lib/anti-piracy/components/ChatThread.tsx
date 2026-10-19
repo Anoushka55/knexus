@@ -1,0 +1,394 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Bot, Paperclip, Send } from 'lucide-react';
+import { answerQuery, greet } from '@/lib/anti-piracy/kbot';
+import type { CaseChatContext, LiveOverviewStats, SuggestedLink } from '@/lib/anti-piracy/kbot';
+import { LoadingDots } from '@/lib/anti-piracy/components/LoadingDots';
+import { api } from '@/lib/anti-piracy/client';
+import type { Role } from '@/lib/anti-piracy/types';
+import { BASE } from "@/lib/anti-piracy/constants";
+
+export interface ChatMessage {
+  id: string;
+  from: 'user' | 'bot';
+  text: string;
+  suggestedLinks?: SuggestedLink[];
+}
+
+export interface QuickStart {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  title: string;
+  description: string;
+  prompt: string;
+}
+
+let msgSeq = 0;
+function nextMsgId() {
+  msgSeq += 1;
+  return `m${msgSeq}`;
+}
+
+interface SearchRecord {
+  id: string;
+  title?: string;
+  name?: string;
+  suspectedTitle?: string;
+}
+type SearchResults = Record<'cases' | 'findings' | 'assets' | 'evidence' | 'entities', SearchRecord[]>;
+
+const SEARCH_CATEGORY_LABEL: Record<keyof SearchResults, string> = {
+  cases: 'Cases',
+  findings: 'Findings',
+  assets: 'Catalogue',
+  evidence: 'Evidence',
+  entities: 'Entities',
+};
+
+function searchRecordHref(category: keyof SearchResults, id: string): string {
+  switch (category) {
+    case 'cases':
+      return `${BASE}/cases/${id}`;
+    case 'findings':
+      return `${BASE}/discovery?id=${id}`;
+    case 'assets':
+      return `${BASE}/catalogue/${id}`;
+    case 'evidence':
+      return `${BASE}/evidence?id=${id}`;
+    case 'entities':
+      return `${BASE}/entities/${id}`;
+  }
+}
+
+/** Mirrors the old top-bar search dropdown: same endpoint, same grouping, now rendered as a chat reply. */
+function buildSearchReply(results: SearchResults): ChatMessage | null {
+  const categories = (['cases', 'findings', 'assets', 'evidence', 'entities'] as const).filter(
+    (c) => (results[c] ?? []).length > 0
+  );
+  if (categories.length === 0) return null;
+
+  const total = categories.reduce((sum, c) => sum + results[c].length, 0);
+  const lines: string[] = [`Found ${total} match${total === 1 ? '' : 'es'}:`];
+  const suggestedLinks: SuggestedLink[] = [];
+  for (const c of categories) {
+    lines.push('', `**${SEARCH_CATEGORY_LABEL[c]}**`);
+    for (const r of results[c]) {
+      const label = r.title || r.name || r.suspectedTitle || r.id;
+      lines.push(`- ${r.id} · ${label}`);
+      suggestedLinks.push({ href: searchRecordHref(c, r.id), label: `${SEARCH_CATEGORY_LABEL[c]}: ${r.id}` });
+    }
+  }
+  return { id: nextMsgId(), from: 'bot', text: lines.join('\n'), suggestedLinks };
+}
+
+/**
+ * Renders K.Bot's plain-text replies (see lib/kbot.ts) as real markup instead
+ * of literal `**bold**` and `- ` characters: **bold** becomes <strong>, and a
+ * run of consecutive "- " lines becomes a real <ul><li> list. Kept minimal —
+ * K.Bot's messages only ever use these two constructs.
+ */
+function renderMessageText(text: string): React.ReactNode {
+  const lines = text.split('\n');
+  const blocks: React.ReactNode[] = [];
+  let listBuffer: string[] = [];
+
+  const flushList = (key: string) => {
+    if (listBuffer.length === 0) return;
+    blocks.push(
+      <ul key={key} className="list-disc pl-4 space-y-0.5 my-1">
+        {listBuffer.map((item, i) => (
+          <li key={i}>{renderInline(item)}</li>
+        ))}
+      </ul>
+    );
+    listBuffer = [];
+  };
+
+  lines.forEach((line, i) => {
+    if (line.startsWith('- ')) {
+      listBuffer.push(line.slice(2));
+      return;
+    }
+    flushList(`ul-${i}`);
+    if (line.length === 0) {
+      blocks.push(<br key={`br-${i}`} />);
+    } else {
+      blocks.push(<span key={`ln-${i}`}>{renderInline(line)}{i < lines.length - 1 ? <br /> : null}</span>);
+    }
+  });
+  flushList('ul-end');
+
+  return blocks;
+}
+
+/** Turns `**bold**` segments into <strong>, leaving everything else as plain text. */
+function renderInline(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
+/**
+ * The reusable core of a K.Bot conversation — message list, typing
+ * indicator, input row, and optional quick-start cards shown before the
+ * first message is sent. Shared by the floating widget (components/layout/KBot.tsx)
+ * and the full-screen welcome-flow chat (app/welcome/page.tsx); each host
+ * supplies its own chrome (floating panel vs. full-height card) around this.
+ */
+export function ChatThread({
+  user,
+  pathname,
+  caseContext,
+  quickStarts,
+  onLinkClick,
+  bubbleMaxWidth = 'max-w-[85%]',
+}: {
+  user: { name: string; role: Role } | null;
+  pathname: string;
+  caseContext?: CaseChatContext | null;
+  quickStarts?: QuickStart[];
+  /** Called after a suggested-link or quick-start navigates, e.g. to close a floating panel. */
+  onLinkClick?: () => void;
+  bubbleMaxWidth?: string;
+}) {
+  const router = useRouter();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const greeted = useRef(false);
+  const [liveStats, setLiveStats] = useState<LiveOverviewStats | null>(null);
+
+  // Fetched once so K.Bot can quote real current numbers when describing
+  // Overview (see lib/kbot.ts's liveOverviewSummary), instead of only the
+  // static page description. Silently ignored if the request fails.
+  useEffect(() => {
+    let cancelled = false;
+    api<{
+      kpis: Record<string, number>;
+      kpiTrends?: Record<string, { current: number }>;
+      platformCounts?: { name: string; value: number }[];
+    }>('overview')
+      .then((data) => {
+        if (cancelled) return;
+        const k = data.kpis;
+        setLiveStats({
+          activeCases: k.activeCases,
+          criticalHigh: k.criticalHigh,
+          takedownRate: k.takedownRate,
+          slaBreachRate: k.slaBreachRate,
+          reappearanceRate: k.reappearanceRate,
+          estimatedExposureCr: k.estimatedExposureCr,
+          avgRemovalDays: k.avgRemovalDays,
+          priorityTitleExposure: k.priorityTitleExposure,
+          newCasesThisWeek: data.kpiTrends?.activeCases?.current ?? 0,
+          newReappearancesThisWeek: data.kpiTrends?.reappearanceRate?.current ?? 0,
+          platforms: data.platformCounts ?? [],
+          slaBreachCount: k.slaBreachCount ?? 0,
+          reappearances: k.reappearances ?? 0,
+        });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!greeted.current) {
+      greeted.current = true;
+      setMessages([{ id: nextMsgId(), from: 'bot', text: greet(user, caseContext) }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
+  }, [messages, typing]);
+
+  async function send(text: string) {
+    const trimmed = text.trim();
+    const file = attachment;
+    if (!trimmed && !file) return;
+    if (!user) return;
+
+    const displayText = file ? `${trimmed || 'Sent an attachment'}\n📎 ${file.name}` : trimmed;
+    setMessages((m) => [...m, { id: nextMsgId(), from: 'user', text: displayText }]);
+    setInput('');
+    setAttachment(null);
+    setTyping(true);
+
+    if (file && !trimmed) {
+      setTimeout(() => {
+        setMessages((m) => [
+          ...m,
+          {
+            id: nextMsgId(),
+            from: 'bot',
+            text: `I can see you attached **${file.name}**, but I can't open or read file contents in this prototype yet — try describing what's in it and I'll help from there.`,
+          },
+        ]);
+        setTyping(false);
+      }, 350);
+      return;
+    }
+
+    // Try a live record lookup first (same endpoint the old top-bar search
+    // used) — a short, question-like message rarely matches a real ID/title
+    // substring, so this stays cheap and falls through to normal Q&A.
+    let searchReply: ChatMessage | null = null;
+    if (trimmed.length >= 2) {
+      try {
+        const results = await api<SearchResults>(`search?q=${encodeURIComponent(trimmed)}`);
+        searchReply = buildSearchReply(results);
+      } catch {
+        // search is a nice-to-have here; fall through to normal Q&A on failure
+      }
+    }
+
+    setTimeout(() => {
+      if (searchReply) {
+        setMessages((m) => [...m, searchReply!]);
+        setTyping(false);
+        return;
+      }
+      const reply = answerQuery({
+        message: trimmed,
+        role: user.role,
+        pathname,
+        caseContext,
+        liveStats,
+      });
+      setMessages((m) => [...m, { id: nextMsgId(), from: 'bot', text: reply.text, suggestedLinks: reply.suggestedLinks }]);
+      setTyping(false);
+    }, 350);
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) setAttachment(file);
+    e.target.value = '';
+  }
+
+  function goTo(href: string) {
+    router.push(href);
+    onLinkClick?.();
+  }
+
+  const showQuickStarts = quickStarts && quickStarts.length > 0 && messages.length <= 1;
+
+  return (
+    <div className="flex flex-col h-full min-h-0">
+      <div ref={listRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3">
+        {messages.map((m) => (
+          <div key={m.id} className={`flex ${m.from === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {m.from === 'bot' && (
+              <div className="w-6 h-6 rounded-md bg-[#00338D] flex items-center justify-center flex-shrink-0 mr-2 mt-0.5">
+                <Bot size={12} className="text-white" />
+              </div>
+            )}
+            <div className={bubbleMaxWidth}>
+              <div
+                className={`text-xs px-3 py-2 rounded-xl ${
+                  m.from === 'user'
+                    ? 'bg-[#0077C8] text-white rounded-br-sm whitespace-pre-wrap'
+                    : 'bg-[#F4F6F9] text-[#1A1F36] rounded-bl-sm ai-output'
+                }`}
+              >
+                {m.from === 'bot' ? renderMessageText(m.text) : m.text}
+              </div>
+              {m.suggestedLinks && m.suggestedLinks.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  {m.suggestedLinks.map((link) => (
+                    <button
+                      key={link.href}
+                      onClick={() => goTo(link.href)}
+                      className="text-[10px] font-semibold px-2 py-1 rounded-full border border-[#0077C8]/30 text-[#00338D] bg-[#0077C8]/[0.06] hover:bg-[#0077C8]/[0.12] transition-colors"
+                    >
+                      {link.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+        {typing && (
+          <div className="flex justify-start">
+            <div className="w-6 h-6 rounded-md bg-[#00338D] flex items-center justify-center flex-shrink-0 mr-2 mt-0.5">
+              <Bot size={12} className="text-white" />
+            </div>
+            <div className="bg-[#F4F6F9] rounded-xl rounded-bl-sm px-3 py-2.5">
+              <LoadingDots size={5} />
+            </div>
+          </div>
+        )}
+
+        {showQuickStarts && (
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">Quick starts</div>
+            <div className="space-y-1.5">
+              {quickStarts!.map((qs) => (
+                <button
+                  key={qs.title}
+                  onClick={() => send(qs.prompt)}
+                  className="w-full flex items-center gap-2.5 rounded-lg border border-[#E2E8F0] px-3 py-2 text-left hover:border-[#0077C8]/40 hover:bg-[#0077C8]/[0.03] transition-colors"
+                >
+                  <span className="w-7 h-7 rounded-md bg-[#0077C8]/10 text-[#0077C8] flex items-center justify-center flex-shrink-0">
+                    <qs.icon size={13} />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-xs font-semibold text-[#1A1F36]">{qs.title}</span>
+                    <span className="block text-[10px] text-[#6B7280] truncate">{qs.description}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex-shrink-0 border-t border-[#E2E8F0] p-3">
+        {attachment && (
+          <div className="flex items-center gap-1.5 mb-2 text-[10px] text-[#00338D] bg-[#0077C8]/[0.06] border border-[#0077C8]/20 rounded-md px-2 py-1 w-fit">
+            <Paperclip size={11} />
+            <span className="max-w-[180px] truncate">{attachment.name}</span>
+            <button onClick={() => setAttachment(null)} className="text-[#9CA3AF] hover:text-[#1A1F36] ml-1">
+              ×
+            </button>
+          </div>
+        )}
+        <div className="flex items-center gap-2">
+          <input ref={fileInputRef} type="file" onChange={handleFileSelect} className="hidden" />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            title="Attach a file"
+            className="w-9 h-9 rounded-lg border border-[#E2E8F0] flex items-center justify-center text-[#6B7280] hover:text-[#00338D] hover:border-[#0077C8]/40 flex-shrink-0 transition-colors"
+          >
+            <Paperclip size={14} />
+          </button>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') send(input);
+            }}
+            placeholder="Ask K.Bot anything..."
+            className="flex-1 bg-[#F4F6F9] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-[#1A1F36] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#0077C8]/50 transition-colors"
+          />
+          <button
+            onClick={() => send(input)}
+            className="w-9 h-9 rounded-lg bg-[#00338D] flex items-center justify-center text-white flex-shrink-0 active:scale-[0.98] transition-transform"
+          >
+            <Send size={14} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
