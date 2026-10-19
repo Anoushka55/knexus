@@ -1,0 +1,65 @@
+/*
+ * Design tokens for the Demand Planning agent ("DemandIQ"), ported from the
+ * standalone "demandai" app. Scoped under .demand-planning-theme (rather
+ * than :root) so they never bleed into the rest of the K-Nexus marketplace,
+ * following the same pattern as the AI Operations and Engineering
+ * Observability agents' own theme files.
+ *
+ * `navy`, `teal`, `muted` and `success` are already registered as Tailwind
+ * color utilities at the repo root (added when the AI Operations agent was
+ * ported) — this file only supplies this agent's own values for them,
+ * scoped to this subtree. `cream`, `coral*`, `warning`, `critical` and
+ * `info` are newly added to tailwind.config.ts for this agent.
+ */
+
+.demand-planning-theme {
+  --cream: #f5ebdd;
+
+  --navy: #2a2755;
+  --navy-soft: #3d3a6e;
+  --navy-mute: #5c5984;
+  --navy-foreground: #ffffff;
+
+  --coral: #e0355c;
+  --coral-soft: #fbe3e8;
+  --coral-dark: #b82a4a;
+
+  --teal: #17a2a0;
+  --teal-soft: #e1f3f2;
+  --teal-dark: #108785;
+  --teal-foreground: #ffffff;
+
+  --success: #2e8b57;
+  --warning: #e8a33d;
+  --critical: #d64545;
+  --info: #2f6fed;
+  --muted: #7a7390;
+
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.demand-planning-theme ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.demand-planning-theme ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.demand-planning-theme ::-webkit-scrollbar-thumb {
+  background: rgba(42, 39, 85, 0.2);
+  border-radius: 5px;
+}
+.demand-planning-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(42, 39, 85, 0.35);
+}
+
+@keyframes dp-pulse-soft {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}

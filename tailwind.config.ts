@@ -124,12 +124,34 @@ const config: Config = {
           danger: "var(--kpmg-status-danger)",
           info: "var(--kpmg-status-info)",
         },
+        // Demand Planning agent theme (scoped under .demand-planning-theme —
+        // see src/app/agents/demand-planning-agent/console/demand-planning-theme.css).
+        // `navy`, `teal`, `muted` and `success` above already exist and are
+        // simply re-valued within that scope; these are the agent's own new
+        // color names, namespaced so they never collide with the rest of the
+        // marketplace.
+        cream: "var(--cream)",
+        "navy-soft": "var(--navy-soft)",
+        "navy-mute": "var(--navy-mute)",
+        coral: {
+          DEFAULT: "var(--coral)",
+          soft: "var(--coral-soft)",
+          dark: "var(--coral-dark)",
+        },
+        "teal-soft": "var(--teal-soft)",
+        "teal-dark": "var(--teal-dark)",
+        warning: "var(--warning)",
+        critical: "var(--critical)",
+        info: "var(--info)",
       },
       animation: {
         "float-slow": "float 6s ease-in-out infinite",
         "float-mid": "float 4.5s ease-in-out infinite",
         "float-fast": "float 3.5s ease-in-out infinite",
         "fade-in": "fadeIn 0.35s ease-out both",
+        // Demand Planning agent's "Agent Insight" status-dot pulse (keyframes
+        // defined in demand-planning-theme.css, scoped to that agent).
+        "dp-pulse-soft": "dp-pulse-soft 2s ease-in-out infinite",
       },
       keyframes: {
         float: {
