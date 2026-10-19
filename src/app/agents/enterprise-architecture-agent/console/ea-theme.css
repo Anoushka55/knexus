@@ -1,0 +1,106 @@
+/*
+ * Design tokens for the Enterprise Architecture Intelligence agent, ported
+ * from the standalone ea-ai-agent FastAPI app. Scoped under .ea-theme
+ * (rather than :root) so they never bleed into the rest of the K-Nexus
+ * marketplace — the same technique used by the AI Operations agent
+ * (src/app/agents/aiops-sentry/console/aiops-theme.css). The variable NAMES
+ * (background, foreground, navy, teal, ...) are the same ones aiops-theme
+ * uses because tailwind.config.ts maps utility classes to these names
+ * generically; each scoped theme class supplies its own values so the two
+ * agents never collide even though they share utility class names.
+ */
+
+.ea-theme {
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --navy: oklch(0.29 0.09 258); /* #0C233C deep EA navy */
+  --navy-foreground: oklch(0.99 0 0);
+  --blue: oklch(0.47 0.18 262); /* #1E49E2 primary action blue */
+  --teal: oklch(0.7 0.11 185); /* #10B981 */
+  --teal-foreground: oklch(0.99 0 0);
+  --crimson: oklch(0.58 0.21 25); /* #DC2626 */
+  --amber: oklch(0.76 0.15 75); /* #F59E0B */
+  --success: oklch(0.64 0.15 150); /* #16A34A */
+
+  --background: oklch(0.975 0.004 253); /* #F8FAFC */
+  --foreground: oklch(0.2 0.03 258); /* #0C233C-ish text */
+  --surface: oklch(1 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.03 258);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.03 258);
+  --primary: oklch(0.29 0.09 258);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.01 258);
+  --secondary-foreground: oklch(0.29 0.09 258);
+  --muted: oklch(0.95 0.01 258);
+  --muted-foreground: oklch(0.52 0.03 258);
+  --accent: oklch(0.47 0.18 262);
+  --accent-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.58 0.21 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.89 0.012 255); /* #DDE3EC */
+  --input: oklch(0.89 0.012 255);
+  --ring: oklch(0.47 0.18 262);
+
+  --sidebar: oklch(0.29 0.09 258);
+  --sidebar-foreground: oklch(0.92 0.01 250);
+  --sidebar-accent: oklch(0.25 0.08 258);
+  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-border: oklch(0.25 0.08 258);
+}
+
+.ea-theme * {
+  border-color: var(--border);
+}
+
+@keyframes ea-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.ea-fade-in {
+  animation: ea-fade-in 0.35s ease-out;
+}
+
+@keyframes ea-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
+.ea-pulse-dot {
+  animation: ea-pulse-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes ea-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ea-slide-up {
+  animation: ea-slide-up 0.3s ease-out;
+}
+
+.ea-theme .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.ea-theme .no-scrollbar {
+  scrollbar-width: none;
+}

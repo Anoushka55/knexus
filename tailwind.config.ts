@@ -19,6 +19,12 @@ const config: Config = {
         "aiops-md": "var(--radius-md)",
         "aiops-lg": "var(--radius-lg)",
         "aiops-xl": "var(--radius-xl)",
+        // Enterprise Architecture Intelligence agent theme (scoped under
+        // .ea-theme — see src/app/agents/enterprise-architecture-agent/console/ea-theme.css).
+        "ea-sm": "var(--radius-sm)",
+        "ea-md": "var(--radius-md)",
+        "ea-lg": "var(--radius-lg)",
+        "ea-xl": "var(--radius-xl)",
       },
       colors: {
         brand: {
