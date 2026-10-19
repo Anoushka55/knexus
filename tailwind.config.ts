@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 const config: Config = {
   content: [
@@ -68,6 +69,12 @@ const config: Config = {
         // src/app/agents/engineering-observability-command-center/console/eng-obs-theme.css).
         // Namespaced so it never collides with the rest of the marketplace's
         // styling or with the other agents' own color groups above.
+        //
+        // KPMG DICE agent theme (scoped under .kpmg-dice-theme — see
+        // src/app/agents/kpmg-dice/console/kpmg-dice-theme.css) shares this
+        // "kpmg" group — both themes define their own values for the shared
+        // sub-keys (blue/purple/teal) via scoped CSS variables, and each adds
+        // its own extra sub-keys, so this is a safe union, not a collision.
         kpmg: {
           "blue-dark": "var(--kpmg-blue-dark)",
           blue: "var(--kpmg-blue)",
@@ -77,6 +84,10 @@ const config: Config = {
           cyan: "var(--kpmg-cyan)",
           purple: "var(--kpmg-purple)",
           teal: "var(--kpmg-teal)",
+          navy: "var(--kpmg-navy)",
+          lightblue: "var(--kpmg-lightblue)",
+          violet: "var(--kpmg-violet)",
+          magenta: "var(--kpmg-magenta)",
         },
         status: {
           critical: "var(--status-critical)",
@@ -89,6 +100,23 @@ const config: Config = {
           main: "var(--occ-surface-main)",
           chrome: "var(--occ-surface-chrome)",
           border: "var(--occ-surface-border)",
+        },
+        rail: {
+          DEFAULT: "var(--kpmg-rail)",
+          900: "var(--kpmg-rail-900)",
+          800: "var(--kpmg-rail-800)",
+          700: "var(--kpmg-rail-700)",
+          600: "var(--kpmg-rail-600)",
+          500: "var(--kpmg-rail-500)",
+        },
+        // KPMG DICE's own status palette — kept distinct from the generic
+        // "status" group above (used by Engineering Observability), since
+        // the two apps use different sub-key names for the same concept.
+        "dice-status": {
+          success: "var(--kpmg-status-success)",
+          warning: "var(--kpmg-status-warning)",
+          danger: "var(--kpmg-status-danger)",
+          info: "var(--kpmg-status-info)",
         },
       },
       animation: {
@@ -110,13 +138,15 @@ const config: Config = {
       boxShadow: {
         card: "0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06)",
         "card-hover": "0 10px 30px -5px rgba(26,58,143,0.12), 0 4px 6px -4px rgba(0,0,0,0.08)",
+        rail: "inset -1px 0 0 rgb(255 255 255 / 0.06)",
       },
     },
   },
   // tailwindcss-animate powers the animate-in/animate-out utilities used by
   // the Radix UI primitives ported for the Engineering Observability
-  // Command Center agent's dialog/dropdown-menu/select/tooltip components.
-  plugins: [require("tailwindcss-animate")],
+  // Command Center and KPMG DICE agents' dialog/dropdown-menu/select/tooltip
+  // components.
+  plugins: [animate],
 };
 
 export default config;
