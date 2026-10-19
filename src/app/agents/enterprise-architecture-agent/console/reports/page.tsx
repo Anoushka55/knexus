@@ -29,8 +29,8 @@ export default function ReportsPage() {
         <div>
           <h1 className="text-2xl font-bold text-navy">Reports</h1>
           <p className="text-sm text-muted-foreground">
-            Saved pipeline runs and the live preview of the current session's results. Print or
-            &quot;Save as PDF&quot; from the browser's print dialog.
+            Saved pipeline runs and the live preview of the current session&apos;s results. Print or
+            &quot;Save as PDF&quot; from the browser&apos;s print dialog.
           </p>
         </div>
         <button

@@ -24,7 +24,7 @@ export default function SettingsPage() {
         </div>
         <p className="text-xs text-muted-foreground mt-3">
           All Claude calls run server-side in Next.js API routes using <code>ANTHROPIC_API_KEY</code> from the
-          environment. No API key or portfolio data is ever sent anywhere except this app's own server.
+          environment. No API key or portfolio data is ever sent anywhere except this app&apos;s own server.
         </p>
       </Card>
 

@@ -9,7 +9,7 @@ export default function ArchitecturePage() {
       <div>
         <h1 className="text-2xl font-bold text-navy">EA Intelligence Architecture</h1>
         <p className="text-sm text-muted-foreground">
-          How the platform's layers and agents fit together, end to end.
+          How the platform&apos;s layers and agents fit together, end to end.
         </p>
       </div>
 
@@ -40,7 +40,7 @@ export default function ArchitecturePage() {
         </div>
         <p className="text-xs text-muted-foreground mt-3">
           A free-text query is routed to one agent, or to a chain of agents (<Pill tone="blue">MULTI</Pill>) when
-          it needs more than one. INSIGHTS almost always runs last because it synthesises everyone else's output.
+          it needs more than one. INSIGHTS almost always runs last because it synthesises everyone else&apos;s output.
         </p>
       </Card>
 

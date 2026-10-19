@@ -152,7 +152,7 @@ export default function CommandCenterPage() {
         >
           <p className="text-xs text-muted-foreground">
             The full report has been saved to the Reports page, where you can preview it full-screen and print
-            it (or "Save as PDF") from the browser's print dialog.
+            it (or &quot;Save as PDF&quot;) from the browser&apos;s print dialog.
           </p>
         </Card>
       )}
