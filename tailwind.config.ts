@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 const config: Config = {
   content: [
@@ -63,6 +64,33 @@ const config: Config = {
         "sidebar-accent": "var(--sidebar-accent)",
         "sidebar-accent-foreground": "var(--sidebar-accent-foreground)",
         "sidebar-border": "var(--sidebar-border)",
+
+        // KPMG DICE agent theme (scoped under .kpmg-dice-theme — see
+        // src/app/agents/kpmg-dice/console/kpmg-dice-theme.css). Namespaced
+        // so it never collides with the rest of the marketplace's styling.
+        kpmg: {
+          navy: "var(--kpmg-navy)",
+          blue: "var(--kpmg-blue)",
+          lightblue: "var(--kpmg-lightblue)",
+          purple: "var(--kpmg-purple)",
+          violet: "var(--kpmg-violet)",
+          teal: "var(--kpmg-teal)",
+          magenta: "var(--kpmg-magenta)",
+        },
+        rail: {
+          DEFAULT: "var(--kpmg-rail)",
+          900: "var(--kpmg-rail-900)",
+          800: "var(--kpmg-rail-800)",
+          700: "var(--kpmg-rail-700)",
+          600: "var(--kpmg-rail-600)",
+          500: "var(--kpmg-rail-500)",
+        },
+        status: {
+          success: "var(--kpmg-status-success)",
+          warning: "var(--kpmg-status-warning)",
+          danger: "var(--kpmg-status-danger)",
+          info: "var(--kpmg-status-info)",
+        },
       },
       animation: {
         "float-slow": "float 6s ease-in-out infinite",
@@ -83,10 +111,11 @@ const config: Config = {
       boxShadow: {
         card: "0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06)",
         "card-hover": "0 10px 30px -5px rgba(26,58,143,0.12), 0 4px 6px -4px rgba(0,0,0,0.08)",
+        rail: "inset -1px 0 0 rgb(255 255 255 / 0.06)",
       },
     },
   },
-  plugins: [],
+  plugins: [animate],
 };
 
 export default config;

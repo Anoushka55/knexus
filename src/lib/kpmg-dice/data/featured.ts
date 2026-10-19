@@ -1,0 +1,823 @@
+import { DEMO_NOW } from './reference'
+import type {
+  Engagement,
+  Lead,
+  LeadEvidence,
+  ServiceTicket,
+  SiteVisit,
+  Transcript,
+} from '@/lib/kpmg-dice/types'
+
+/**
+ * The hand-authored profiles. These are the records a presenter actually opens
+ * during the demo, so their journeys, evidence and CRM-vs-reality mismatches
+ * are written rather than generated. The other ~12,830 leads come from the
+ * generator and fill out the funnel around them.
+ */
+
+function daysBefore(days: number) {
+  return new Date(DEMO_NOW.getTime() - days * 86_400_000).toISOString()
+}
+
+function evidence(partial: Partial<LeadEvidence>): LeadEvidence {
+  return {
+    websiteVisits: 0,
+    brochureViews: 0,
+    emailOpens: 0,
+    callsAnswered: 0,
+    callsAttempted: 0,
+    whatsappReplies: 0,
+    projectsViewed: 1,
+    siteVisitsAttended: 0,
+    daysSinceLastActivity: 3,
+    ...partial,
+  }
+}
+
+export interface FeaturedProfile {
+  lead: Lead
+  engagements: Omit<Engagement, 'id' | 'leadId'>[]
+  siteVisits?: Omit<SiteVisit, 'id' | 'leadId'>[]
+  tickets?: Omit<ServiceTicket, 'id' | 'leadId' | 'customerName'>[]
+  occupation: string
+  isNri: boolean
+}
+
+export const FEATURED_PROFILES: FeaturedProfile[] = [
+  /* ---------------- 1. Priya Shah — the hero record ---------------- */
+  {
+    occupation: 'IT Professional',
+    isNri: false,
+    lead: {
+      id: 'MRD-79291',
+      name: 'Priya Shah',
+      email: 'priya.shah@example.com',
+      phone: '+91 98200 41288',
+      score: 92,
+      intent: 'high',
+      stage: 'site-visit',
+      budgetCr: 2.5,
+      preferredLocation: 'Powai',
+      interestedProjectIds: ['prj-forest-edge', 'prj-silicon-oasis', 'prj-serein'],
+      familySize: 4,
+      sourceCampaignId: 'cmp-summer-homes',
+      ownerId: 'rep-rk',
+      crmStatus: 'Site Visit Scheduled',
+      evidenceStatus: 'strong-evidence',
+      sentiment: 'positive',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote:
+        'Visited website 5x, high intent; viewed 3 brochures yesterday',
+      evidence: evidence({
+        websiteVisits: 5,
+        brochureViews: 3,
+        emailOpens: 7,
+        callsAnswered: 3,
+        callsAttempted: 3,
+        whatsappReplies: 6,
+        projectsViewed: 3,
+        siteVisitsAttended: 1,
+        daysSinceLastActivity: 1,
+      }),
+      createdAt: daysBefore(33),
+      lastActivityAt: daysBefore(1),
+    },
+    engagements: [
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Landing page — Summer Homes 2026',
+        summary: 'Filled enquiry form for 3 BHK in Powai. Budget band ₹2–3 Cr.',
+        occurredAt: daysBefore(33),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'positive',
+        subject: 'Qualification call',
+        summary:
+          'Confirmed budget ₹2.5 Cr, family of 4, needs 3 BHK near an international school. Timeline: 3 months.',
+        durationMins: 8,
+        occurredAt: daysBefore(31),
+      },
+      {
+        channel: 'email',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Meridian Forest Edge — floor plans & pricing',
+        summary: 'Sent brochure pack for Forest Edge. Opened 4 times within a day.',
+        occurredAt: daysBefore(28),
+      },
+      {
+        channel: 'whatsapp',
+        direction: 'inbound',
+        sentiment: 'positive',
+        subject: 'Question on possession',
+        summary:
+          'Asked whether any ready-to-move inventory exists — current rental lease ends in September.',
+        occurredAt: daysBefore(22),
+      },
+      {
+        channel: 'site-visit',
+        direction: 'inbound',
+        sentiment: 'positive',
+        subject: 'Site visit — Meridian Forest Edge',
+        summary:
+          'Visited with spouse. Liked the 3 BHK layout and clubhouse. Raised possession timeline as the main concern.',
+        occurredAt: daysBefore(12),
+      },
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'positive',
+        subject: 'Return visit — pricing page',
+        summary:
+          'Viewed Forest Edge, Silicon Oasis and Serein pricing pages across two sessions. Downloaded 3 brochures.',
+        occurredAt: daysBefore(1),
+      },
+    ],
+    siteVisits: [
+      {
+        projectId: 'prj-forest-edge',
+        projectName: 'Meridian Forest Edge',
+        scheduledAt: daysBefore(12),
+        attended: true,
+        feedback:
+          'Positive on layout and amenities. Compared possession dates against her lease expiry.',
+        objection: 'Possession Timeline',
+        outcome: 'considering',
+      },
+    ],
+  },
+
+  /* ---------------- 2. Rohit Mehta ---------------- */
+  {
+    occupation: 'Banking Professional',
+    isNri: false,
+    lead: {
+      id: 'MRD-79318',
+      name: 'Rohit Mehta',
+      email: 'rohit.mehta@example.com',
+      phone: '+91 98212 77401',
+      score: 87,
+      intent: 'high',
+      stage: 'qualified',
+      budgetCr: 1.8,
+      preferredLocation: 'Thane',
+      interestedProjectIds: ['prj-dream-acres', 'prj-silicon-oasis'],
+      familySize: 3,
+      sourceCampaignId: 'cmp-urban-living',
+      ownerId: 'rep-as',
+      crmStatus: 'Qualified',
+      evidenceStatus: 'supported',
+      sentiment: 'positive',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote:
+        'Lead score high, budget match; opened interest in 2 projects',
+      evidence: evidence({
+        websiteVisits: 4,
+        brochureViews: 2,
+        emailOpens: 5,
+        callsAnswered: 2,
+        callsAttempted: 3,
+        whatsappReplies: 4,
+        projectsViewed: 2,
+        daysSinceLastActivity: 2,
+      }),
+      createdAt: daysBefore(26),
+      lastActivityAt: daysBefore(2),
+    },
+    engagements: [
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Urban Living Festival registration',
+        summary: 'Registered at the festival micro-site for Thane inventory.',
+        occurredAt: daysBefore(26),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'positive',
+        subject: 'Discovery call',
+        summary:
+          'Upgrading from a 2 BHK rental. Home-loan pre-approved at ₹1.4 Cr. Wants a weekend site visit.',
+        durationMins: 11,
+        occurredAt: daysBefore(21),
+      },
+      {
+        channel: 'email',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Dream Acres & Silicon Oasis — comparison sheet',
+        summary: 'Sent a side-by-side of both projects. Opened 5 times.',
+        occurredAt: daysBefore(14),
+      },
+      {
+        channel: 'whatsapp',
+        direction: 'inbound',
+        sentiment: 'positive',
+        subject: 'Weekend availability',
+        summary: 'Asked if a Saturday morning slot is available for a visit.',
+        occurredAt: daysBefore(2),
+      },
+    ],
+  },
+
+  /* ---------------- 3. Neha Iyer ---------------- */
+  {
+    occupation: 'Chartered Accountant',
+    isNri: false,
+    lead: {
+      id: 'MRD-79402',
+      name: 'Neha Iyer',
+      email: 'neha.iyer@example.com',
+      phone: '+91 99303 55190',
+      score: 75,
+      intent: 'high',
+      stage: 'proposal',
+      budgetCr: 3.2,
+      preferredLocation: 'Seawoods',
+      interestedProjectIds: ['prj-windsor'],
+      familySize: 4,
+      sourceCampaignId: 'cmp-premium-living',
+      ownerId: 'rep-sp',
+      crmStatus: 'Proposal Sent',
+      evidenceStatus: 'supported',
+      sentiment: 'neutral',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote: 'Asked about payment terms 2 days ago',
+      evidence: evidence({
+        websiteVisits: 3,
+        brochureViews: 2,
+        emailOpens: 4,
+        callsAnswered: 3,
+        callsAttempted: 4,
+        whatsappReplies: 2,
+        projectsViewed: 1,
+        siteVisitsAttended: 1,
+        daysSinceLastActivity: 2,
+      }),
+      createdAt: daysBefore(48),
+      lastActivityAt: daysBefore(2),
+    },
+    engagements: [
+      {
+        channel: 'email',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Premium Living Expo enquiry',
+        summary: 'Enquired about sea-facing 3 BHK inventory at Windsor.',
+        occurredAt: daysBefore(48),
+      },
+      {
+        channel: 'site-visit',
+        direction: 'inbound',
+        sentiment: 'positive',
+        subject: 'Site visit — Windsor',
+        summary: 'Visited the sample flat. Liked the view; queried carpet area efficiency.',
+        occurredAt: daysBefore(24),
+      },
+      {
+        channel: 'email',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Proposal — Windsor 3 BHK',
+        summary: 'Shared the cost sheet and allotment terms for unit B-1204.',
+        occurredAt: daysBefore(9),
+      },
+      {
+        channel: 'call',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Payment terms query',
+        summary:
+          'Asked for a construction-linked plan instead of down payment, and whether stamp duty is included. Rep promised a callback — none logged since.',
+        durationMins: 6,
+        occurredAt: daysBefore(2),
+      },
+    ],
+    siteVisits: [
+      {
+        projectId: 'prj-windsor',
+        projectName: 'Meridian Windsor',
+        scheduledAt: daysBefore(24),
+        attended: true,
+        feedback: 'Liked the view and the tower positioning.',
+        objection: 'Carpet area efficiency',
+        outcome: 'considering',
+      },
+    ],
+  },
+
+  /* ---------------- 4. Arjun Nair ---------------- */
+  {
+    occupation: 'Civil Engineer',
+    isNri: false,
+    lead: {
+      id: 'MRD-79455',
+      name: 'Arjun Nair',
+      email: 'arjun.nair@example.com',
+      phone: '+91 98191 20876',
+      score: 64,
+      intent: 'medium',
+      stage: 'engaged',
+      budgetCr: 1.2,
+      preferredLocation: 'Kalyan',
+      interestedProjectIds: ['prj-royal-pavilion'],
+      familySize: 3,
+      sourceCampaignId: 'cmp-digital-organic',
+      ownerId: 'rep-mb',
+      crmStatus: 'Contacted',
+      evidenceStatus: 'weak-evidence',
+      sentiment: 'neutral',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote: 'No action in 7 days; opened email 2 days ago',
+      evidence: evidence({
+        websiteVisits: 2,
+        brochureViews: 1,
+        emailOpens: 3,
+        callsAnswered: 1,
+        callsAttempted: 4,
+        whatsappReplies: 0,
+        projectsViewed: 1,
+        daysSinceLastActivity: 7,
+      }),
+      createdAt: daysBefore(40),
+      lastActivityAt: daysBefore(7),
+    },
+    engagements: [
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Organic search — Kalyan 2 BHK',
+        summary: 'Landed on the Royal Pavilion project page and submitted an enquiry.',
+        occurredAt: daysBefore(40),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'First contact',
+        summary:
+          'Reached on the fourth attempt. Confirmed a ₹1.2 Cr budget but said the decision is 6 months out.',
+        durationMins: 4,
+        occurredAt: daysBefore(30),
+      },
+      {
+        channel: 'email',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Meridian Royal Pavilion — ready-to-move options',
+        summary: 'Opened the mailer twice, no reply.',
+        occurredAt: daysBefore(7),
+      },
+    ],
+  },
+
+  /* ---------------- 5. Meenal Desai — the deferred follow-up ---------------- */
+  {
+    occupation: 'Marketing Head',
+    isNri: false,
+    lead: {
+      id: 'MRD-79487',
+      name: 'Meenal Desai',
+      email: 'meenal.desai@example.com',
+      phone: '+91 98676 30514',
+      score: 58,
+      intent: 'medium',
+      stage: 'qualified',
+      budgetCr: 2.1,
+      preferredLocation: 'Mulund',
+      interestedProjectIds: ['prj-silicon-oasis'],
+      familySize: 4,
+      sourceCampaignId: 'cmp-refer-earn',
+      ownerId: 'rep-rk',
+      crmStatus: 'Interested',
+      evidenceStatus: 'weak-evidence',
+      sentiment: 'neutral',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote: 'Requested call after 15 days',
+      evidence: evidence({
+        websiteVisits: 2,
+        brochureViews: 1,
+        emailOpens: 2,
+        callsAnswered: 2,
+        callsAttempted: 2,
+        whatsappReplies: 1,
+        projectsViewed: 1,
+        daysSinceLastActivity: 16,
+      }),
+      createdAt: daysBefore(52),
+      lastActivityAt: daysBefore(16),
+    },
+    engagements: [
+      {
+        channel: 'whatsapp',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Referral enquiry',
+        summary: 'Referred by an existing Silicon Oasis buyer. Asked for a price list.',
+        occurredAt: daysBefore(52),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Qualification call',
+        summary: 'Budget ₹2.1 Cr confirmed. Waiting on the sale of an existing flat.',
+        durationMins: 7,
+        occurredAt: daysBefore(38),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Follow-up call — deferred',
+        summary:
+          'Asked the rep to call back after 15 days once her current flat sale closes. No follow-up task was created.',
+        durationMins: 3,
+        occurredAt: daysBefore(16),
+      },
+    ],
+  },
+
+  /* ---------------- 6. Sanya Kapoor — NRI buyer ---------------- */
+  {
+    occupation: 'Consultant',
+    isNri: true,
+    lead: {
+      id: 'MRD-79540',
+      name: 'Sanya Kapoor',
+      email: 'sanya.kapoor@example.com',
+      phone: '+971 50 442 7781',
+      // Genuine interest, but the journey has stalled at scheduling — two of
+      // five calls answered and nine days of silence hold the score down.
+      score: 56,
+      intent: 'medium',
+      stage: 'qualified',
+      budgetCr: 2.9,
+      preferredLocation: 'Navi Mumbai',
+      interestedProjectIds: ['prj-eureka-park', 'prj-windsor'],
+      familySize: 3,
+      sourceCampaignId: 'cmp-summer-homes',
+      ownerId: 'rep-sp',
+      crmStatus: 'Qualified',
+      evidenceStatus: 'supported',
+      sentiment: 'positive',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote:
+        'Based in Dubai — cannot attend a site visit; journey stalled at scheduling',
+      evidence: evidence({
+        websiteVisits: 7,
+        brochureViews: 3,
+        emailOpens: 8,
+        callsAnswered: 2,
+        callsAttempted: 5,
+        whatsappReplies: 5,
+        projectsViewed: 2,
+        daysSinceLastActivity: 9,
+      }),
+      createdAt: daysBefore(44),
+      lastActivityAt: daysBefore(9),
+    },
+    engagements: [
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'NRI enquiry form',
+        summary: 'Submitted an enquiry from Dubai for investment-grade inventory.',
+        occurredAt: daysBefore(44),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'positive',
+        subject: 'Intro call (IST evening)',
+        summary:
+          'Investor profile, targeting rental yield. Asked about NRI payment routes and POA.',
+        durationMins: 14,
+        occurredAt: daysBefore(37),
+      },
+      {
+        channel: 'whatsapp',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Site visit scheduling',
+        summary:
+          'Cannot travel before October. Asked whether a video walkthrough is possible — no response logged.',
+        occurredAt: daysBefore(9),
+      },
+    ],
+  },
+
+  /* ---------------- 8. Vikas Deshmukh — the DND case ---------------- */
+  {
+    occupation: 'Pharma Executive',
+    isNri: false,
+    lead: {
+      id: 'MRD-79566',
+      name: 'Vikas Deshmukh',
+      email: 'vikas.deshmukh@example.com',
+      phone: '+91 98204 61233',
+      score: 41,
+      intent: 'low',
+      stage: 'lead',
+      budgetCr: 1.5,
+      preferredLocation: 'Chembur',
+      interestedProjectIds: ['prj-silicon-oasis'],
+      familySize: 2,
+      sourceCampaignId: 'cmp-portals',
+      ownerId: 'rep-mb',
+      // Still sitting as "Interested" in the CRM despite an explicit opt-out.
+      crmStatus: 'Interested',
+      evidenceStatus: 'contradicted',
+      sentiment: 'negative',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote:
+        "Asked not to be contacted again on the last call — CRM still shows 'Interested'",
+      evidence: evidence({
+        websiteVisits: 1,
+        brochureViews: 0,
+        emailOpens: 1,
+        callsAnswered: 2,
+        callsAttempted: 9,
+        whatsappReplies: 0,
+        projectsViewed: 1,
+        daysSinceLastActivity: 5,
+      }),
+      createdAt: daysBefore(71),
+      lastActivityAt: daysBefore(5),
+    },
+    engagements: [
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Portal lead',
+        summary: 'Aggregator-sourced enquiry, no stated requirement.',
+        occurredAt: daysBefore(71),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Attempted contact ×7',
+        summary: 'Seven unanswered outbound attempts over five weeks.',
+        occurredAt: daysBefore(40),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'negative',
+        subject: 'Opt-out request',
+        summary:
+          "Answered and asked the team to stop calling — already purchased elsewhere. Rep left the record open as 'Interested'.",
+        durationMins: 2,
+        occurredAt: daysBefore(5),
+      },
+    ],
+  },
+
+  /* ---------------- 9. Ritu Sen — booked, with a service ticket ---------------- */
+  {
+    occupation: 'Doctor',
+    isNri: false,
+    lead: {
+      id: 'MRD-79603',
+      name: 'Ritu Sen',
+      email: 'ritu.sen@example.com',
+      phone: '+91 98925 14470',
+      score: 78,
+      intent: 'high',
+      stage: 'booking',
+      budgetCr: 3.8,
+      preferredLocation: 'Borivali',
+      interestedProjectIds: ['prj-serein'],
+      familySize: 4,
+      sourceCampaignId: 'cmp-summer-homes',
+      ownerId: 'rep-vr',
+      crmStatus: 'Booked',
+      evidenceStatus: 'strong-evidence',
+      sentiment: 'neutral',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote: 'Booked unit A-1802; post-sales handover query unresolved',
+      evidence: evidence({
+        websiteVisits: 5,
+        brochureViews: 3,
+        emailOpens: 9,
+        callsAnswered: 6,
+        callsAttempted: 6,
+        whatsappReplies: 11,
+        projectsViewed: 1,
+        siteVisitsAttended: 2,
+        daysSinceLastActivity: 6,
+      }),
+      createdAt: daysBefore(96),
+      lastActivityAt: daysBefore(6),
+    },
+    engagements: [
+      {
+        channel: 'site-visit',
+        direction: 'inbound',
+        sentiment: 'positive',
+        subject: 'Site visit — Serein',
+        summary: 'Second visit with family; finalised unit A-1802.',
+        occurredAt: daysBefore(58),
+      },
+      {
+        channel: 'email',
+        direction: 'outbound',
+        sentiment: 'positive',
+        subject: 'Booking confirmation',
+        summary: 'Allotment letter issued for A-1802 at ₹3.8 Cr.',
+        occurredAt: daysBefore(41),
+      },
+      {
+        channel: 'whatsapp',
+        direction: 'inbound',
+        sentiment: 'negative',
+        subject: 'Handover documentation delay',
+        summary:
+          'Chasing the registration appointment date for the third time. No owner assigned to the request.',
+        occurredAt: daysBefore(6),
+      },
+    ],
+    siteVisits: [
+      {
+        projectId: 'prj-serein',
+        projectName: 'Meridian Serein',
+        scheduledAt: daysBefore(58),
+        attended: true,
+        feedback: 'Finalised unit A-1802.',
+        outcome: 'booked',
+      },
+    ],
+    tickets: [
+      {
+        subject: 'Registration appointment not scheduled',
+        category: 'Documentation',
+        severity: 'high',
+        openedAt: daysBefore(14),
+        slaDueAt: daysBefore(-1),
+        status: 'open',
+        detail:
+          'Customer has chased three times for a registration slot. No owner assigned; SLA breaches tomorrow.',
+      },
+    ],
+  },
+
+  /* ---------------- 10. Aditya Ranade — pipeline inflation ---------------- */
+  {
+    occupation: 'Architect',
+    isNri: false,
+    lead: {
+      id: 'MRD-79641',
+      name: 'Aditya Ranade',
+      email: 'aditya.ranade@example.com',
+      phone: '+91 99871 40329',
+      score: 52,
+      intent: 'medium',
+      stage: 'qualified',
+      budgetCr: 1.1,
+      preferredLocation: 'Panvel',
+      interestedProjectIds: ['prj-royal-pavilion', 'prj-eureka-park'],
+      familySize: 2,
+      sourceCampaignId: 'cmp-broker',
+      ownerId: 'rep-mb',
+      // Marked Qualified by the rep with nothing behind it.
+      crmStatus: 'Qualified',
+      evidenceStatus: 'contradicted',
+      sentiment: 'neutral',
+      dnd: false,
+      cold: false,
+      featured: true,
+      evidenceNote:
+        "Marked 'Qualified' with no answered call, no site visit and no brochure opened in 34 days",
+      evidence: evidence({
+        websiteVisits: 1,
+        brochureViews: 0,
+        emailOpens: 0,
+        callsAnswered: 0,
+        callsAttempted: 6,
+        whatsappReplies: 0,
+        projectsViewed: 2,
+        daysSinceLastActivity: 34,
+      }),
+      createdAt: daysBefore(58),
+      lastActivityAt: daysBefore(34),
+    },
+    engagements: [
+      {
+        channel: 'website',
+        direction: 'inbound',
+        sentiment: 'neutral',
+        subject: 'Broker-submitted lead',
+        summary: 'Channel partner submitted the lead with a ₹1.1 Cr budget.',
+        occurredAt: daysBefore(58),
+      },
+      {
+        channel: 'call',
+        direction: 'outbound',
+        sentiment: 'neutral',
+        subject: 'Attempted contact ×6',
+        summary: 'Six outbound attempts, none answered.',
+        occurredAt: daysBefore(34),
+      },
+    ],
+  },
+]
+
+/* ------------------------------------------------------------------ */
+/* Call transcript — Priya Shah, the hot-intent scenario               */
+/* ------------------------------------------------------------------ */
+
+export const FEATURED_TRANSCRIPTS: Transcript[] = [
+  {
+    id: 'txn-priya-hot',
+    leadId: 'MRD-79291',
+    title: 'Priya Shah — possession & payment terms',
+    scenario: 'hot-intent',
+    repName: 'Rahul Kulkarni',
+    recordedAt: daysBefore(1),
+    lines: [
+      { speaker: 'rep', atSecond: 0, text: 'Good morning Priya, Rahul from Meridian Developers. Is this a good time?' },
+      { speaker: 'customer', atSecond: 5, text: 'Yes, perfect timing actually. I was just going through the Forest Edge brochure again.' },
+      { speaker: 'rep', atSecond: 12, text: 'Wonderful. You visited the Powai site about ten days back — how did the 3 BHK feel to you and your family?' },
+      { speaker: 'customer', atSecond: 20, text: 'We loved it. The layout works really well for us, and my husband was quite impressed with the clubhouse.' },
+      { speaker: 'customer', atSecond: 29, text: 'The one thing holding us back is possession. Our rental lease ends in September and Forest Edge is December 2027.' },
+      { speaker: 'rep', atSecond: 40, text: 'That is a fair concern. Let me check what ready-to-move options we have in your budget band.' },
+      { speaker: 'customer', atSecond: 48, text: 'That would help. We are looking at around two and a half crore, and we would want to book this quarter if the timing works.' },
+      { speaker: 'rep', atSecond: 60, text: 'Understood. Meridian Serein in Andheri is ready to move, though it sits slightly above your band.' },
+      { speaker: 'customer', atSecond: 70, text: 'Can you send me the payment terms for both? I want to compare what the monthly outflow looks like.' },
+      { speaker: 'customer', atSecond: 80, text: 'And could someone from your finance team call me about the home loan tie-ups? I would like to close this soon.' },
+      { speaker: 'rep', atSecond: 92, text: 'Absolutely. I will send both payment plans today and have our finance desk reach out tomorrow morning.' },
+      { speaker: 'customer', atSecond: 101, text: 'Great. If the numbers work we are ready to move ahead quickly.' },
+      { speaker: 'rep', atSecond: 108, text: 'Perfect, I will get that across to you within the hour. Thank you Priya.' },
+    ],
+  },
+
+  /* ---------------- DND / opt-out ---------------- */
+  {
+    id: 'txn-vikas-dnd',
+    leadId: 'MRD-79566',
+    title: 'Vikas Deshmukh — opt-out request',
+    scenario: 'dnd',
+    repName: 'Meera Bhatt',
+    recordedAt: daysBefore(5),
+    lines: [
+      { speaker: 'rep', atSecond: 0, text: 'Good afternoon, am I speaking with Vikas Deshmukh? This is Meera from Meridian Developers.' },
+      { speaker: 'customer', atSecond: 6, text: 'Yes, speaking. Look, I have been getting calls from your team almost every week.' },
+      { speaker: 'rep', atSecond: 14, text: 'I apologise for that. I am calling about the 2 BHK enquiry you raised for our Chembur project.' },
+      { speaker: 'customer', atSecond: 22, text: 'That enquiry was months ago. I have already bought a flat elsewhere — we registered it in March.' },
+      { speaker: 'rep', atSecond: 32, text: 'Oh, congratulations. Would you be open to hearing about investment options in the same corridor?' },
+      { speaker: 'customer', atSecond: 40, text: 'No. Honestly, this is a waste of time for both of us.' },
+      { speaker: 'customer', atSecond: 47, text: 'Please do not call again, and remove my number from your list.' },
+      { speaker: 'rep', atSecond: 55, text: 'Understood, I am sorry for the inconvenience. I will make sure that happens.' },
+      { speaker: 'customer', atSecond: 62, text: 'Thank you. I do not want any more messages either.' },
+      { speaker: 'rep', atSecond: 68, text: 'Noted. Apologies again, and all the best in the new home.' },
+    ],
+  },
+
+  /* ---------------- Deferred callback ---------------- */
+  {
+    id: 'txn-meenal-deferred',
+    leadId: 'MRD-79487',
+    title: 'Meenal Desai — deferred decision',
+    scenario: 'deferred',
+    repName: 'Rahul Kulkarni',
+    recordedAt: daysBefore(16),
+    lines: [
+      { speaker: 'rep', atSecond: 0, text: 'Hello Meenal, Rahul from Meridian Developers. Following up on the Silicon Oasis 3 BHK we discussed.' },
+      { speaker: 'customer', atSecond: 7, text: 'Hi Rahul, yes. We are still very interested, the project looked good.' },
+      { speaker: 'rep', atSecond: 14, text: 'Glad to hear it. Shall I block a unit on the twelfth floor for you this week?' },
+      { speaker: 'customer', atSecond: 21, text: 'Not just yet. Everything depends on our existing flat in Mulund — the sale is in progress.' },
+      { speaker: 'customer', atSecond: 31, text: 'The buyer has asked for a couple of weeks to arrange their loan.' },
+      { speaker: 'rep', atSecond: 39, text: 'That makes sense. What would be a good time to reconnect?' },
+      { speaker: 'customer', atSecond: 45, text: 'Please call me after 15 days. By then the sale should be closed and I will know my numbers.' },
+      { speaker: 'rep', atSecond: 55, text: 'Absolutely, I will note that down and come back to you then.' },
+      { speaker: 'customer', atSecond: 62, text: 'Perfect. And if anything opens up on a higher floor in the meantime, do let me know.' },
+      { speaker: 'rep', atSecond: 71, text: 'Will do, Meenal. Speak in a couple of weeks.' },
+    ],
+  },
+]

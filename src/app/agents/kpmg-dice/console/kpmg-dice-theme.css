@@ -1,0 +1,132 @@
+/*
+ * Design tokens for the KPMG DICE — Customer Journey Command Center agent,
+ * ported from the standalone app. Scoped under .kpmg-dice-theme (rather than
+ * :root) so they never bleed into the rest of the K-Nexus marketplace.
+ *
+ * The shadcn/ui semantic keys (background, foreground, card, primary, ...)
+ * are already wired in tailwind.config.ts to plain `var(--token)` references
+ * (the convention this marketplace uses for every ported agent), so each
+ * variable below holds a complete color value — not a bare HSL channel
+ * triplet — the same way the aiops-sentry theme does.
+ */
+
+.kpmg-dice-theme {
+  --radius: 0.75rem;
+
+  --background: hsl(210 40% 98%);
+  --foreground: hsl(222 47% 11%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+
+  /* KPMG navy as the primary */
+  --primary: hsl(220 100% 28%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+
+  --accent: hsl(199 100% 43%);
+  --accent-foreground: hsl(0 0% 100%);
+
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(210 100% 36%);
+
+  /* Brand tokens */
+  --kpmg-navy: #00338d;
+  --kpmg-blue: #005eb8;
+  --kpmg-lightblue: #0091da;
+  --kpmg-purple: #6d2077;
+  --kpmg-violet: #483698;
+  --kpmg-teal: #00a3a1;
+  --kpmg-magenta: #c6007e;
+
+  /* Rail (dark sidebar) navy ramp */
+  --kpmg-rail: #00256b;
+  --kpmg-rail-900: #001a4d;
+  --kpmg-rail-800: #00256b;
+  --kpmg-rail-700: #00338d;
+  --kpmg-rail-600: #0a429e;
+  --kpmg-rail-500: #1e56b3;
+
+  --kpmg-status-success: #16a34a;
+  --kpmg-status-warning: #f59e0b;
+  --kpmg-status-danger: #dc2626;
+  --kpmg-status-info: #0091da;
+}
+
+.kpmg-dice-theme * {
+  border-color: var(--border);
+}
+
+.kpmg-dice-theme .nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.kpmg-dice-theme .surface {
+  border-radius: 0.75rem;
+  border: 1px solid rgb(226 232 240);
+  background-color: #fff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+}
+
+.kpmg-dice-theme .section-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgb(15 23 42);
+}
+
+.kpmg-dice-theme .muted-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(100 116 139);
+}
+
+.kpmg-dice-theme .scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(148 163 184 / 0.45) transparent;
+}
+.kpmg-dice-theme .scrollbar-slim::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.kpmg-dice-theme .scrollbar-slim::-webkit-scrollbar-thumb {
+  background-color: rgb(148 163 184 / 0.45);
+  border-radius: 9999px;
+}
+.kpmg-dice-theme .scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kpmg-dice-theme .rail-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+}
+.kpmg-dice-theme .rail-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.kpmg-dice-theme .rail-scroll::-webkit-scrollbar-thumb {
+  background-color: rgb(255 255 255 / 0.18);
+  border-radius: 9999px;
+}
+
+.kpmg-dice-theme .no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.kpmg-dice-theme .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
