@@ -59,10 +59,10 @@
   --kpmg-rail-600: #0a429e;
   --kpmg-rail-500: #1e56b3;
 
-  --kpmg-status-success: #16a34a;
-  --kpmg-status-warning: #f59e0b;
-  --kpmg-status-danger: #dc2626;
-  --kpmg-status-info: #0091da;
+  --kpmg-dice-status-success: #16a34a;
+  --kpmg-dice-status-warning: #f59e0b;
+  --kpmg-dice-status-danger: #dc2626;
+  --kpmg-dice-status-info: #0091da;
 }
 
 .kpmg-dice-theme * {

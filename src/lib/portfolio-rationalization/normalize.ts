@@ -296,7 +296,7 @@ export function s(v: unknown): string {
 
 export function n(v: unknown): number | null {
   if (v === null || v === undefined) return null;
-  let str = String(v).trim().replace(/[,$£€\s]/g, "");
+  const str = String(v).trim().replace(/[,$£€\s]/g, "");
   if (!str || ["nan", "none", "null", "n/a", "-", ""].includes(str.toLowerCase())) return null;
   const m = str.match(/^(-?[\d.]+)\s*([KkMmBb]?)$/);
   if (m) {

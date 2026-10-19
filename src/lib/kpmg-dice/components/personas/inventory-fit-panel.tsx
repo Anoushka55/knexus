@@ -216,7 +216,7 @@ export function InventoryFitPanel() {
         )}
 
         <p className="mt-3 border-t border-slate-100 pt-2.5 text-[11.5px] leading-relaxed text-slate-500">
-          Fit is deterministic: budget proximity, the persona's actual unit-type
+          Fit is deterministic: budget proximity, the persona&apos;s actual unit-type
           affinity, stated project interest and intent. The affinity table is a
           configured domain assumption, not a fitted one — it is the first thing
           to argue with in a workshop.

@@ -248,7 +248,7 @@ export function useCasesOfType(type: FeedbackType) {
   return USE_CASES.filter((u) => u.type === type)
 }
 
-export function useCaseBySlug(slug: string) {
+export function findUseCaseBySlug(slug: string) {
   return USE_CASES.find((u) => u.slug === slug)
 }
 

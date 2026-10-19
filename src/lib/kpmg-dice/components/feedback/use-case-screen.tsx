@@ -14,7 +14,7 @@ import { VocAnalyzer } from './voc-analyzer'
 import {
   FEEDBACK_TYPE_META,
   USE_CASES,
-  useCaseBySlug,
+  findUseCaseBySlug,
   type FeedbackType,
 } from './use-cases'
 import { cn } from '@/lib/kpmg-dice/lib/utils'
@@ -78,7 +78,7 @@ function SegmentedBar({ active }: { active: string }) {
 }
 
 export function UseCaseScreen({ slug }: { slug: string }) {
-  const useCase = useCaseBySlug(slug)
+  const useCase = findUseCaseBySlug(slug)
   if (!useCase) return null
 
   // Type 1's three use cases share this route, so the header names the group.
@@ -140,7 +140,7 @@ function Screen({ slug }: { slug: string }) {
     case 'control-tower':
       return <ControlTower />
     default: {
-      const useCase = useCaseBySlug(slug)
+      const useCase = findUseCaseBySlug(slug)
       return (
         <ComingSoon
           title={useCase?.name ?? 'Use case'}

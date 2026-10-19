@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { CircleCheck, Info, TriangleAlert, Workflow } from 'lucide-react'
 
 import { ArchitectureDiagram, PIPELINE_NOTE } from './architecture-diagram'
@@ -250,12 +251,12 @@ export function PlatformPage() {
       <Card>
         <CardHeader>
           <CardTitle>KPMG SPAR AI Engine framework</CardTitle>
-          <a
+          <Link
             href="/agents/kpmg-dice/console/csat-nps/survey-optimizer"
             className="shrink-0 text-[11.5px] font-semibold text-kpmg-violet hover:underline"
           >
             Running live in Survey Participation Optimizer &rarr;
-          </a>
+          </Link>
         </CardHeader>
         <CardContent>
           <SparFramework />
