@@ -179,7 +179,7 @@ export const agents: AgentData[] = [
       "Analyse and optimise your enterprise architecture by mapping capabilities, identifying redundancies, and generating actionable modernisation roadmaps.",
     categories: ["IT", "Operations"],
     accuracy: 94,
-    accessLink: "https://ea-ai-agent.vercel.app/",
+    accessLink: "/agents/enterprise-architecture-agent/console",
     videoUrl: null,
     integrations: [],
     scope: {
