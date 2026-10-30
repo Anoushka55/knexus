@@ -544,7 +544,7 @@ export const agents: AgentData[] = [
       "Forecast demand and align supply plans across products and regions using AI-driven trend and seasonality analysis.",
     categories: ["Operations", "Finance"],
     accuracy: 95,
-    accessLink: "https://demandai-snowy.vercel.app/",
+    accessLink: "/agents/demand-planning-agent/console",
     videoUrl: "/videos/demand-planning-agent.mp4",
     integrations: [],
     scope: {
