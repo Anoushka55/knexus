@@ -6,6 +6,8 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    // Legacy Tech Modernization console's shell + shared UI live in src/lib.
+    "./src/lib/legacy-modernization/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
@@ -29,6 +31,12 @@ const config: Config = {
       },
       colors: {
         brand: {
+          // Legacy Tech Modernization agent (scoped under .ltm-theme — see
+          // src/app/agents/legacy-tech-modernization/console/ltm-theme.css).
+          // New sub-keys only; the marketplace's own brand shades below are
+          // untouched. (`bg-brand` had no DEFAULT before, so it's unused elsewhere.)
+          DEFAULT: "var(--brand)",
+          bright: "var(--brand-bright)",
           blue: "#1a3a8f",       // Knexus Blue — primary CTA, .AI accent, links, badges
           "blue-dark": "#152d72", // hover state for blue
           navy: "#0f172a",        // Knexus Navy — dark backgrounds, footer
@@ -94,6 +102,10 @@ const config: Config = {
           lightblue: "var(--kpmg-lightblue)",
           violet: "var(--kpmg-violet)",
           magenta: "var(--kpmg-magenta)",
+          // Engineering Observability (ontos-insight port) sub-keys.
+          dark: "var(--kpmg-dark)",
+          light: "var(--kpmg-light)",
+          sky: "var(--kpmg-sky)",
         },
         status: {
           critical: "var(--status-critical)",
@@ -130,6 +142,20 @@ const config: Config = {
         // simply re-valued within that scope; these are the agent's own new
         // color names, namespaced so they never collide with the rest of the
         // marketplace.
+        // Engineering Observability Command Center (ontos-insight port, scoped
+        // under .eng-obs-theme). `critical`, `warning`, `info`, `teal-soft`
+        // and the base sidebar tokens already exist and are re-valued within
+        // that scope; these are the agent's additional color names.
+        "critical-soft": "var(--critical-soft)",
+        "warning-soft": "var(--warning-soft)",
+        healthy: "var(--healthy)",
+        "healthy-soft": "var(--healthy-soft)",
+        ai: "var(--ai)",
+        "ai-soft": "var(--ai-soft)",
+        "teal-brand": "var(--teal-brand)",
+        "info-soft": "var(--info-soft)",
+        "sidebar-primary": "var(--sidebar-primary)",
+        "sidebar-primary-foreground": "var(--sidebar-primary-foreground)",
         cream: "var(--cream)",
         "navy-soft": "var(--navy-soft)",
         "navy-mute": "var(--navy-mute)",
@@ -143,6 +169,21 @@ const config: Config = {
         warning: "var(--warning)",
         critical: "var(--critical)",
         info: "var(--info)",
+        // Legacy Tech Modernization agent theme (scoped under .ltm-theme —
+        // see src/app/agents/legacy-tech-modernization/console/ltm-theme.css).
+        // Shared names above (background, card, primary, navy, success,
+        // warning, warning-soft, sidebar-*, …) are re-valued in that scope;
+        // these are its own additional color names.
+        "navy-deep": "var(--navy-deep)",
+        intel: {
+          DEFAULT: "var(--intel)",
+          soft: "var(--intel-soft)",
+        },
+        danger: {
+          DEFAULT: "var(--danger)",
+          soft: "var(--danger-soft)",
+        },
+        "success-soft": "var(--success-soft)",
       },
       animation: {
         "float-slow": "float 6s ease-in-out infinite",
@@ -152,6 +193,8 @@ const config: Config = {
         // Demand Planning agent's "Agent Insight" status-dot pulse (keyframes
         // defined in demand-planning-theme.css, scoped to that agent).
         "dp-pulse-soft": "dp-pulse-soft 2s ease-in-out infinite",
+        // Legacy Tech Modernization agent (keyframes defined in ltm-theme.css).
+        "scale-in": "ltm-scale-in 0.28s ease-out both",
       },
       keyframes: {
         float: {
@@ -167,6 +210,8 @@ const config: Config = {
         card: "0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06)",
         "card-hover": "0 10px 30px -5px rgba(26,58,143,0.12), 0 4px 6px -4px rgba(0,0,0,0.08)",
         rail: "inset -1px 0 0 rgb(255 255 255 / 0.06)",
+        // Legacy Tech Modernization agent (variable defined in ltm-theme.css).
+        panel: "var(--shadow-panel)",
       },
     },
   },

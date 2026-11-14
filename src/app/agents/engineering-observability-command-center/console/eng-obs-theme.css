@@ -1,95 +1,121 @@
 /*
  * Design tokens for the Engineering Observability Command Center agent,
- * ported from the standalone "engineering-occ" app. Scoped under
- * .eng-obs-theme (rather than :root) so they never bleed into the rest of
- * the K-Nexus marketplace, following the same pattern as the AI Operations
- * agent's aiops-theme.css.
+ * ported from the standalone ontos-insight app (src/styles.css, Tailwind v4).
+ * Scoped under .eng-obs-theme (rather than :root) so they never bleed into the
+ * rest of the K-Nexus marketplace, following the same pattern as the other
+ * agents' theme files.
  *
- * The shadcn/ui token names (background, foreground, card, popover,
- * primary, secondary, muted, accent, destructive, border, input, ring) are
- * already registered as Tailwind color utilities at the repo root (added
- * when the AI Operations agent was ported) — this file only supplies this
- * agent's own values for them, scoped to this subtree. The kpmg.*, status.*
- * and occ-surface.* groups below are newly added to tailwind.config.ts for
- * this agent and are not used anywhere else in the marketplace.
+ * Every token below is registered as a Tailwind colour in tailwind.config.ts
+ * as var(--token). Tailwind v3 cannot apply opacity modifiers (bg-x/40) to
+ * var() colours, so the port rewrites those classes to
+ * bg-[color:color-mix(in_oklab,var(--x)_40%,transparent)].
  */
 
 .eng-obs-theme {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(222 47% 11%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(222 47% 11%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(222 47% 11%);
-  --primary: hsl(222 100% 28%);
-  --primary-foreground: hsl(210 40% 98%);
-  --secondary: hsl(210 40% 96%);
-  --secondary-foreground: hsl(222 47% 11%);
-  --muted: hsl(210 40% 96%);
-  --muted-foreground: hsl(215 16% 47%);
-  --accent: hsl(210 40% 96%);
-  --accent-foreground: hsl(222 47% 11%);
-  --destructive: hsl(0 72% 51%);
-  --destructive-foreground: hsl(210 40% 98%);
-  --border: hsl(214 32% 91%);
-  --input: hsl(214 32% 91%);
-  --ring: hsl(222 84% 40%);
+  --radius: 0.5rem;
 
-  /* KPMG brand palette (source app's "kpmg" color group) */
-  --kpmg-blue-dark: #001b4f;
-  --kpmg-blue: #00338d;
-  --kpmg-blue-mid: #1e40af;
-  --kpmg-blue-hover: #1d4ed8;
-  --kpmg-blue-light: #e6eefa;
-  --kpmg-cyan: #00a3e0;
-  --kpmg-purple: #7c3aed;
-  --kpmg-teal: #0d9488;
+  /* KPMG palette */
+  --kpmg-dark: oklch(0.24 0.09 264); /* #001B4F */
+  --kpmg-blue: oklch(0.33 0.11 264); /* #00338D */
+  --kpmg-light: oklch(0.94 0.025 245); /* #E6EEFA */
+  --kpmg-sky: oklch(0.62 0.14 250); /* #0091DA-ish accent */
 
-  /* Status palette (source app's "status" color group) */
-  --status-critical: #dc2626;
-  --status-warning: #ea580c;
-  --status-healthy: #16a34a;
-  --status-info: #2563eb;
-  --status-neutral: #6b7280;
+  /* Semantic */
+  --critical: oklch(0.55 0.22 27);
+  --critical-soft: oklch(0.96 0.02 27);
+  --warning: oklch(0.6 0.18 45);
+  --warning-soft: oklch(0.96 0.03 60);
+  --healthy: oklch(0.55 0.15 150);
+  --healthy-soft: oklch(0.96 0.03 150);
+  --ai: oklch(0.5 0.22 295);
+  --ai-soft: oklch(0.95 0.03 295);
+  --teal-brand: oklch(0.55 0.1 185);
+  --teal-soft: oklch(0.95 0.03 185);
+  --info: oklch(0.5 0.15 250);
+  --info-soft: oklch(0.95 0.02 250);
 
-  /* Chrome surfaces (source app's "surface" color group, renamed
-     occ-surface here because the marketplace root already registers a
-     flat "surface" color for the AI Operations agent). */
-  --occ-surface-main: #ffffff;
-  --occ-surface-chrome: #f8fafc;
-  --occ-surface-border: #e2e8f0;
+  /* shadcn tokens */
+  --background: oklch(0.985 0.003 247);
+  --foreground: oklch(0.21 0.034 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.034 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.034 264);
+  --primary: oklch(0.33 0.11 264);
+  --primary-foreground: oklch(0.985 0.003 247);
+  --secondary: oklch(0.94 0.025 245);
+  --secondary-foreground: oklch(0.33 0.11 264);
+  --muted: oklch(0.967 0.007 247);
+  --muted-foreground: oklch(0.51 0.03 260);
+  --accent: oklch(0.94 0.025 245);
+  --accent-foreground: oklch(0.33 0.11 264);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.985 0.003 247);
+  --border: oklch(0.92 0.01 255);
+  --input: oklch(0.92 0.01 255);
+  --ring: oklch(0.33 0.11 264);
+
+  /* Sidebar */
+  --sidebar: oklch(0.24 0.09 264);
+  --sidebar-foreground: oklch(0.9 0.02 250);
+  --sidebar-primary: oklch(0.62 0.14 250);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.3 0.1 264);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.32 0.09 264);
+
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-.eng-obs-theme * {
+.eng-obs-theme *,
+.eng-obs-theme *::before,
+.eng-obs-theme *::after {
   border-color: var(--border);
 }
 
-.eng-obs-theme .occ-scroll::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.eng-obs-theme :focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
-.eng-obs-theme .occ-scroll::-webkit-scrollbar-track {
-  background: transparent;
+/* Thin scrollbars for dense panels (source: @utility scrollbar-thin) */
+.eng-obs-theme .scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.eng-obs-theme .scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.eng-obs-theme .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
 }
 
-.eng-obs-theme .occ-scroll::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
+/* Subtle pulsing dot for live indicators (source: @utility animate-pulse-dot) */
+.eng-obs-theme .animate-pulse-dot {
+  animation: eng-obs-pulse-dot 2s ease-in-out infinite;
 }
-
-.eng-obs-theme .occ-scroll::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-@keyframes eng-obs-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
+@keyframes eng-obs-pulse-dot {
+  0%,
+  100% {
     opacity: 1;
   }
+  50% {
+    opacity: 0.35;
+  }
 }
-.eng-obs-fade-in {
-  animation: eng-obs-fade-in 0.4s ease-out;
+
+/* Graph traversal highlight (source: @utility animate-traverse) */
+.eng-obs-theme .animate-traverse {
+  animation: eng-obs-traverse 1.6s ease-in-out infinite;
+}
+@keyframes eng-obs-traverse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 0%, transparent);
+  }
 }

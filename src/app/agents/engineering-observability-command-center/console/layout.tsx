@@ -1,219 +1,267 @@
 "use client";
 
-import { useState } from "react";
+/*
+ * App shell for the Engineering Observability Command Center, ported from the
+ * standalone ontos-insight app (src/components/shell/app-shell.tsx). The
+ * source app's own localStorage login screen is dropped: K-Nexus middleware
+ * already guards /agents/* behind the marketplace login.
+ */
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Activity,
-  AlertTriangle,
   Bell,
   ChevronDown,
-  DollarSign,
-  HelpCircle,
-  Home,
-  LayoutGrid,
+  CircleUserRound,
+  LayoutDashboard,
+  Activity,
+  Workflow,
+  AlertTriangle,
+  BrainCircuit,
+  Wallet,
+  Briefcase,
   Network,
   Search,
-  Share2,
-  Sparkles,
-  type LucideIcon,
+  Menu,
+  X,
+  Zap,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ArrowLeft,
 } from "lucide-react";
-import { currentUser } from "@/lib/engineering-observability/data/user";
+import { useState, type ReactNode } from "react";
+import { cn } from "@/lib/engineering-observability/utils";
+import { obsHref } from "@/lib/engineering-observability/paths";
+import { AskOccButton, AskOccOverlay } from "@/lib/engineering-observability/shell/ask-occ";
 import "./eng-obs-theme.css";
 
-const BASE = "/agents/engineering-observability-command-center/console";
-
-interface NavItem {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-  badge?: string;
-}
-
-const nav: NavItem[] = [
-  { to: `${BASE}/overview`, label: "Overview", icon: Home },
-  { to: `${BASE}/live-ops`, label: "Live Ops", icon: Activity },
-  { to: `${BASE}/service-map`, label: "Service Map", icon: Network },
-  { to: `${BASE}/incidents`, label: "Incidents", icon: AlertTriangle },
-  { to: `${BASE}/ai-insights`, label: "AI Insights", icon: Sparkles },
-  { to: `${BASE}/cost-risk`, label: "Cost & Risk", icon: DollarSign },
-  { to: `${BASE}/engineering-portfolio`, label: "Engineering Portfolio", icon: LayoutGrid },
-  { to: `${BASE}/knowledge-graph`, label: "Knowledge Graph", icon: Share2, badge: "NEW" },
+const navItems = [
+  { title: "Overview", url: obsHref("/"), icon: LayoutDashboard },
+  { title: "Live Ops", url: obsHref("/live-ops"), icon: Activity },
+  { title: "Service Map", url: obsHref("/service-map"), icon: Workflow },
+  { title: "Incidents", url: obsHref("/incidents"), icon: AlertTriangle },
+  { title: "AI Insights", url: obsHref("/ai-insights"), icon: BrainCircuit },
+  { title: "Cost & Risk", url: obsHref("/cost-risk"), icon: Wallet },
+  { title: "Engineering Portfolio", url: obsHref("/portfolio"), icon: Briefcase },
+  { title: "Knowledge Graph", url: obsHref("/knowledge-graph"), icon: Network },
 ];
 
-export default function EngineeringObservabilityLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function AppMark({ collapsed }: { collapsed?: boolean }) {
   return (
-    <div className="eng-obs-theme min-h-screen flex bg-background text-foreground">
-      <SidebarNav />
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <TopHeader />
-        <main className="eng-obs-fade-in occ-scroll flex-1 overflow-y-auto min-w-0 bg-[var(--occ-surface-chrome)]">
-          {children}
-        </main>
+    <div className={cn("flex items-center gap-2.5", collapsed && "justify-center")}>
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-sidebar-primary">
+        <Zap className="h-[18px] w-[18px] text-sidebar-primary-foreground" fill="currentColor" />
       </div>
+      {!collapsed && (
+        <div className="leading-tight">
+          <div className="text-sm font-bold tracking-wide text-sidebar-primary-foreground">
+            Engineering OCC
+          </div>
+          <div className="text-[10px] uppercase tracking-widest text-[color:color-mix(in_oklab,var(--sidebar-foreground)_60%,transparent)]">
+            Engineering Intelligence Platform
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function SidebarNav() {
-  const path = usePathname();
-  const [hover, setHover] = useState(false);
-
+function BackToKnexus({ collapsed }: { collapsed?: boolean }) {
   return (
-    <aside
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className={`${hover ? "w-60" : "w-14"} transition-[width] duration-200 bg-[var(--kpmg-blue-dark)] text-white border-r border-white/10 flex flex-col sticky top-0 h-screen z-30`}
+    <Link
+      href="/"
+      title="Back to K-Nexus.AI"
+      className={cn(
+        "flex items-center gap-2 rounded-md px-3 py-2 text-[12px] font-medium text-[color:color-mix(in_oklab,var(--sidebar-foreground)_70%,transparent)] transition-colors hover:bg-[color:color-mix(in_oklab,var(--sidebar-accent)_50%,transparent)] hover:text-sidebar-primary-foreground",
+        collapsed && "justify-center px-0",
+      )}
     >
-      <Link
-        href="/"
-        title="Back to K-Nexus.AI"
-        className="h-14 flex items-center px-3 border-b border-white/10 hover:bg-white/10 transition-colors"
-      >
-        <div className="w-8 h-8 shrink-0">
-          <svg viewBox="0 0 32 32" width={32} height={32}>
-            <rect x="3" y="3" width="11" height="11" fill="#fff" />
-            <rect x="18" y="3" width="11" height="11" fill="#005EB8" />
-            <rect x="3" y="18" width="11" height="11" fill="#005EB8" />
-            <rect x="18" y="18" width="11" height="11" fill="#00B0A0" />
-          </svg>
-        </div>
-        {hover && (
-          <span className="ml-2 text-sm font-semibold tracking-tight leading-tight">
-            Engineering OCC
-          </span>
-        )}
-      </Link>
+      <ArrowLeft className="h-4 w-4 shrink-0" />
+      {!collapsed && <span>Back to K-Nexus.AI</span>}
+    </Link>
+  );
+}
 
-      <nav className="flex-1 py-3 overflow-y-auto">
-        <div className="pb-3 mb-3 border-b border-white/10">
-          <Link
-            href="/"
-            title="Back to K-Nexus.AI"
-            className="flex items-center h-9 px-3 mx-2 rounded-md text-[13px] text-white/70 hover:bg-white/10 hover:text-white"
-          >
-            <Home className="w-4 h-4 shrink-0" />
-            {hover && <span className="ml-3 truncate">Back to K-Nexus</span>}
-          </Link>
-        </div>
-
-        {nav.map((item) => {
-          const active = path?.startsWith(item.to) ?? false;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.to}
-              href={item.to}
-              className={`flex items-center h-9 px-3 mx-2 rounded-md text-[13px] ${
-                active
-                  ? "bg-[var(--kpmg-blue-mid)] text-white"
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
-              }`}
-              title={item.label}
-            >
-              <Icon className="w-4 h-4 shrink-0" strokeWidth={1.75} />
-              {hover && (
-                <span className="ml-3 truncate flex-1 min-w-0">
-                  {item.label}
-                  {item.badge ? (
-                    <span className="ml-2 inline-block rounded-full bg-[var(--kpmg-purple)] px-1.5 py-[1px] text-[9px] font-bold uppercase leading-[14px] tracking-wide text-white align-middle">
-                      {item.badge}
-                    </span>
-                  ) : null}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {hover && (
-        <div className="px-4 py-3 border-t border-white/10 text-[10px] text-white/50 leading-relaxed">
-          Anonymized client operational data, used to demonstrate platform capability.
+function SidebarNav({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed?: boolean }) {
+  const currentPath = usePathname() ?? "";
+  return (
+    <nav className={cn("scrollbar-thin flex-1 overflow-y-auto py-4", collapsed ? "px-2" : "px-3")}>
+      {!collapsed && (
+        <div className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-[color:color-mix(in_oklab,var(--sidebar-foreground)_50%,transparent)]">
+          Command Center
         </div>
       )}
-    </aside>
+      <ul className="space-y-0.5">
+        {navItems.map((item) => {
+          const active = currentPath.startsWith(item.url);
+          return (
+            <li key={item.title}>
+              <Link
+                href={item.url}
+                onClick={onNavigate}
+                title={collapsed ? item.title : undefined}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-[13px] font-medium transition-colors",
+                  collapsed && "justify-center px-0",
+                  active
+                    ? "bg-sidebar-accent text-sidebar-primary-foreground"
+                    : "text-[color:color-mix(in_oklab,var(--sidebar-foreground)_75%,transparent)] hover:bg-[color:color-mix(in_oklab,var(--sidebar-accent)_50%,transparent)] hover:text-sidebar-primary-foreground",
+                )}
+              >
+                <item.icon className={cn("h-4 w-4 shrink-0", active && "text-sidebar-primary")} />
+                {!collapsed && <span>{item.title}</span>}
+                {!collapsed && active && (
+                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sidebar-primary" />
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      {!collapsed && (
+        <div className="mt-6 rounded-md border border-sidebar-border bg-[color:color-mix(in_oklab,var(--sidebar-accent)_40%,transparent)] p-3">
+          <div className="flex items-center gap-2 text-[11px] font-semibold text-sidebar-primary-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-healthy animate-pulse-dot" />
+            Data fabric live
+          </div>
+          <p className="mt-1 text-[11px] leading-snug text-[color:color-mix(in_oklab,var(--sidebar-foreground)_60%,transparent)]">
+            7/7 sources synced · 41,634 entities · updated 2 min ago
+          </p>
+        </div>
+      )}
+    </nav>
   );
 }
 
-function TopHeader() {
-  const path = usePathname();
+export default function EngineeringObservabilityLayout({ children }: { children: ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [askOpen, setAskOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-5 border-b border-border bg-[var(--occ-surface-main)] px-5">
-      <h1 className="shrink-0 text-[15px] font-bold tracking-tight text-foreground whitespace-nowrap">
-        Engineering Observability Command Center
-      </h1>
-      <span className="hidden xl:inline text-xs text-muted-foreground truncate">
-        / {labelFor(path ?? "")}
-      </span>
-
-      {/* Search */}
-      <div className="relative w-full max-w-[380px] hidden md:block">
-        <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-          strokeWidth={2}
-        />
-        <input
-          type="text"
-          placeholder="Ask OCC or search for anything..."
-          className="h-9 w-full rounded-lg border border-border bg-background pl-9 pr-[70px] text-[13px] text-foreground placeholder:text-muted-foreground focus:border-[var(--kpmg-blue-mid)] focus:outline-none focus:ring-2 focus:ring-[var(--kpmg-blue-mid)]/15"
-        />
-        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded border border-border bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
-          Ctrl + K
-        </span>
-      </div>
-
-      {/* Actions */}
-      <div className="ml-auto flex shrink-0 items-center gap-3">
-        <button
-          type="button"
-          className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--kpmg-blue-mid)] px-4 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--kpmg-blue-hover)]"
+    <div className="eng-obs-theme flex min-h-screen w-full bg-background font-sans text-foreground">
+      {/* Desktop sidebar */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-30 hidden flex-col bg-sidebar transition-[width] duration-200 lg:flex",
+          collapsed ? "w-16" : "w-64",
+        )}
+      >
+        <div
+          className={cn(
+            "flex h-16 items-center border-b border-sidebar-border",
+            collapsed ? "justify-center px-2" : "px-4",
+          )}
         >
-          Ask OCC
-          <Sparkles className="h-4 w-4" strokeWidth={2} />
-        </button>
-
-        <button
-          type="button"
-          aria-label={`${currentUser.notificationCount} notifications`}
-          className="relative flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          <Bell className="h-5 w-5" strokeWidth={2} />
-          <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--status-critical)] px-1 text-[10px] font-bold text-white">
-            {currentUser.notificationCount}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          aria-label="Help"
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          <HelpCircle className="h-5 w-5" strokeWidth={2} />
-        </button>
-
-        <div className="hidden md:flex items-center gap-2.5 pl-3 border-l border-border">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--kpmg-blue)] text-[13px] font-semibold text-white">
-            {currentUser.initials}
-          </span>
-          <div className="text-[13px] leading-tight">
-            <p className="font-bold text-foreground">{currentUser.firstName}</p>
-            <p className="text-[11px] text-muted-foreground">{currentUser.role}</p>
-          </div>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" strokeWidth={2} />
+          <AppMark collapsed={collapsed} />
         </div>
-      </div>
-    </header>
-  );
-}
+        <SidebarNav collapsed={collapsed} />
+        <div className="space-y-1 border-t border-sidebar-border p-2">
+          <BackToKnexus collapsed={collapsed} />
+          <button
+            onClick={() => setCollapsed((c) => !c)}
+            className="flex w-full items-center justify-center gap-2 rounded-md px-2 py-2 text-[12px] font-medium text-[color:color-mix(in_oklab,var(--sidebar-foreground)_70%,transparent)] transition-colors hover:bg-[color:color-mix(in_oklab,var(--sidebar-accent)_50%,transparent)] hover:text-sidebar-primary-foreground"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? (
+              <PanelLeftOpen className="h-4 w-4" />
+            ) : (
+              <>
+                <PanelLeftClose className="h-4 w-4" />
+                <span>Collapse</span>
+              </>
+            )}
+          </button>
+        </div>
+      </aside>
 
-function labelFor(path: string) {
-  const item = nav.find((n) => path.startsWith(n.to));
-  return item?.label ?? "";
+      {/* Mobile sidebar */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div
+            className="absolute inset-0 bg-[color:color-mix(in_oklab,var(--foreground)_40%,transparent)]"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="absolute inset-y-0 left-0 flex w-72 flex-col bg-sidebar">
+            <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
+              <AppMark />
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="rounded p-1 text-sidebar-foreground hover:bg-sidebar-accent"
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <SidebarNav onNavigate={() => setMobileOpen(false)} />
+            <div className="border-t border-sidebar-border p-2">
+              <BackToKnexus />
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* Main column */}
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 flex-col transition-[padding] duration-200",
+          collapsed ? "lg:pl-16" : "lg:pl-64",
+        )}
+      >
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-card px-4 lg:px-8">
+          <button
+            className="rounded p-1.5 text-muted-foreground hover:bg-muted lg:hidden"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
+          <div className="hidden items-center gap-2 text-xs text-muted-foreground md:flex">
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-healthy animate-pulse-dot" />
+              Live · Demo environment
+            </span>
+          </div>
+
+          <div className="ml-auto flex items-center gap-2">
+            <div className="relative hidden sm:block">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                readOnly
+                onClick={() => setAskOpen(true)}
+                placeholder="Ask OCC anything…"
+                className="h-9 w-56 cursor-pointer rounded-md border border-input bg-background pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring lg:w-72"
+              />
+              <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded border border-border bg-muted px-1.5 text-[10px] text-muted-foreground">
+                AI
+              </kbd>
+            </div>
+            <AskOccButton onClick={() => setAskOpen(true)} />
+            <button
+              className="relative rounded-md p-2 text-muted-foreground hover:bg-muted"
+              aria-label="Notifications"
+            >
+              <Bell className="h-[18px] w-[18px]" />
+              <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-critical text-[9px] font-bold text-critical-soft">
+                2
+              </span>
+            </button>
+            <button className="flex items-center gap-2 rounded-md p-1.5 hover:bg-muted">
+              <CircleUserRound className="h-6 w-6 text-muted-foreground" />
+              <span className="hidden text-left leading-tight md:block">
+                <span className="block text-xs font-semibold text-foreground">S. Okafor</span>
+                <span className="block text-[10px] text-muted-foreground">Eng. Director</span>
+              </span>
+              <ChevronDown className="hidden h-3.5 w-3.5 text-muted-foreground md:block" />
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1 px-4 py-6 lg:px-8">{children}</main>
+      </div>
+
+      <AskOccOverlay open={askOpen} onClose={() => setAskOpen(false)} />
+    </div>
+  );
 }

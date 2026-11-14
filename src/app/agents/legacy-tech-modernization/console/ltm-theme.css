@@ -1,0 +1,173 @@
+/*
+ * Design tokens for the Legacy Tech Modernization agent, ported from the
+ * standalone "connect-insight-modernize" app (Tailwind v4). Scoped under
+ * .ltm-theme (rather than :root) so they never bleed into the rest of the
+ * K-Nexus marketplace, following the same pattern as the other agents'
+ * console theme files.
+ *
+ * Most color names (background, card, primary, muted, navy, success,
+ * sidebar-*, …) are already registered as Tailwind color utilities at the
+ * repo root and are simply re-valued in this scope; the agent's new names
+ * (brand-bright, intel, danger, *-soft, chart-*, navy-deep, …) are added to
+ * tailwind.config.ts. Opacity-modified colors were rewritten to
+ * color-mix() arbitrary values during the port, since Tailwind v3 cannot
+ * apply `/NN` modifiers to var() colors.
+ */
+
+.ltm-theme {
+  --radius: 0.625rem;
+  --shadow-panel: 0 1px 3px 0 oklch(0.2 0.04 260 / 0.07), 0 1px 2px -1px oklch(0.2 0.04 260 / 0.05);
+
+  /* surfaces */
+  --background: oklch(0.981 0.003 247.9);
+  --foreground: oklch(0.208 0.041 265.7);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.208 0.041 265.7);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.208 0.041 265.7);
+
+  /* brand */
+  --primary: oklch(0.529 0.216 261.5);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --brand: oklch(0.529 0.216 261.5);
+  --brand-bright: oklch(0.554 0.213 262.9);
+
+  --secondary: oklch(0.968 0.007 247.9);
+  --secondary-foreground: oklch(0.279 0.041 260);
+  --muted: oklch(0.968 0.007 247.9);
+  --muted-foreground: oklch(0.554 0.038 257.4);
+  --accent: oklch(0.97 0.014 254.6);
+  --accent-foreground: oklch(0.42 0.19 262);
+
+  /* navy shell */
+  --navy-deep: oklch(0.245 0.104 268.5);
+  --navy: oklch(0.28 0.108 267.8);
+
+  /* intelligence / status */
+  --intel: oklch(0.53 0.23 283.9);
+  --intel-soft: oklch(0.955 0.02 285);
+  --success: oklch(0.585 0.166 148.6);
+  --success-soft: oklch(0.962 0.033 152);
+  --warning: oklch(0.769 0.163 70.1);
+  --warning-soft: oklch(0.968 0.038 85);
+  --danger: oklch(0.577 0.234 27.3);
+  --danger-soft: oklch(0.965 0.022 20);
+
+  --destructive: oklch(0.577 0.234 27.3);
+  --destructive-foreground: oklch(0.99 0.005 250);
+
+  --border: oklch(0.921 0.008 264.5);
+  --input: oklch(0.921 0.008 264.5);
+  --ring: oklch(0.554 0.213 262.9);
+
+  --chart-1: oklch(0.554 0.213 262.9);
+  --chart-2: oklch(0.585 0.166 148.6);
+  --chart-3: oklch(0.769 0.163 70.1);
+  --chart-4: oklch(0.577 0.234 27.3);
+  --chart-5: oklch(0.53 0.23 283.9);
+  --chart-6: oklch(0.66 0.09 214);
+
+  --sidebar: oklch(0.245 0.104 268.5);
+  --sidebar-foreground: oklch(0.93 0.015 255);
+  --sidebar-primary: oklch(0.529 0.216 261.5);
+  --sidebar-primary-foreground: oklch(0.99 0.005 250);
+  --sidebar-accent: oklch(0.31 0.11 267);
+  --sidebar-accent-foreground: oklch(0.98 0.005 250);
+  --sidebar-border: oklch(0.33 0.09 267);
+  --sidebar-ring: oklch(0.554 0.213 262.9);
+
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+}
+
+.ltm-theme *,
+.ltm-theme ::before,
+.ltm-theme ::after {
+  border-color: var(--border);
+}
+
+.ltm-theme :is(h1, h2, h3, h4) {
+  letter-spacing: -0.014em;
+}
+
+/* The source's radius scale is derived from --radius (Tailwind v4 @theme). */
+.ltm-theme .rounded-sm {
+  border-radius: calc(var(--radius) - 4px);
+}
+.ltm-theme .rounded-md {
+  border-radius: calc(var(--radius) - 2px);
+}
+.ltm-theme .rounded-lg {
+  border-radius: var(--radius);
+}
+.ltm-theme .rounded-xl {
+  border-radius: calc(var(--radius) + 4px);
+}
+
+/* Custom utilities from the source app's @utility blocks. */
+.ltm-theme .panel {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.ltm-theme .panel:hover {
+  box-shadow: 0 6px 18px -8px oklch(0.2 0.04 260 / 0.22);
+  border-color: color-mix(in oklch, var(--brand) 26%, var(--border));
+}
+
+.ltm-theme .num {
+  font-variant-numeric: tabular-nums;
+}
+
+.ltm-theme .story-link {
+  position: relative;
+  display: inline-block;
+}
+.ltm-theme .story-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.25s ease;
+}
+.ltm-theme .story-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+@keyframes ltm-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ltm-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ltm-theme main > * {
+  animation: ltm-fade-in 0.35s ease-out both;
+}
