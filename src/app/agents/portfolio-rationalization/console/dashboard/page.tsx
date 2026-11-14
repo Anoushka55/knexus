@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSession } from "@/lib/portfolio-rationalization/session";
 import { RATIONALIZATION_ACTIONS, type RationalizationAction } from "@/lib/portfolio-rationalization/types";
-import { ActionBadge, EmptyState, KpiCard, SectionCard, scoreColor } from "../_components";
+import { ActionBadge, EmptyState, LoadSampleButton, KpiCard, SectionCard, scoreColor } from "../_components";
 
 export default function DashboardPage() {
   const { tools, duplications, assessment } = useSession();
@@ -76,6 +76,7 @@ export default function DashboardPage() {
             >
               Go to Data Ingest
             </Link>
+            <LoadSampleButton className="ml-2" />
           </div>
         </SectionCard>
       </div>

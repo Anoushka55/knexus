@@ -1,5 +1,8 @@
 "use client";
 
+import { FlaskConical } from "lucide-react";
+import { useSession } from "@/lib/portfolio-rationalization/session";
+import { buildSamplePortfolio } from "@/lib/portfolio-rationalization/sample-data";
 import type { RationalizationAction } from "@/lib/portfolio-rationalization/types";
 
 const ACTION_CLASS: Record<string, string> = {
@@ -92,5 +95,27 @@ export function Spinner({ className = "" }: { className?: string }) {
       className={`ptr-spin inline-block w-4 h-4 rounded-full border-2 border-white/30 border-t-white ${className}`}
       aria-label="Loading"
     />
+  );
+}
+
+/**
+ * One-click sample data so the dashboards can be explored without uploading
+ * anything. Loads an illustrative portfolio (see sample-data.ts) into the
+ * session, replacing whatever is there.
+ */
+export function LoadSampleButton({ className = "" }: { className?: string }) {
+  const { ingestTools, setAssessment } = useSession();
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        const s = buildSamplePortfolio();
+        setAssessment(null);
+        ingestTools(s.tools, s.duplications, s.painPoints, s.detectedBudget);
+      }}
+      className={`inline-flex items-center gap-1.5 h-9 px-4 rounded-md border border-[var(--ptr-navy)] text-[var(--ptr-navy)] bg-white text-sm font-medium hover:bg-[var(--ptr-background)] ${className}`}
+    >
+      <FlaskConical className="w-4 h-4" /> Load sample data
+    </button>
   );
 }

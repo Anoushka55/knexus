@@ -12,14 +12,19 @@ import {
   Bot,
   FileBarChart,
   ChevronDown,
+  Hexagon,
+  Gauge,
 } from "lucide-react";
 import { SessionProvider, useSession } from "@/lib/portfolio-rationalization/session";
+import { LoadSampleButton } from "./_components";
 import "./ptr-theme.css";
 
 const BASE = "/agents/portfolio-rationalization/console";
 
 const nav = [
+  { to: `${BASE}/overview`, label: "Overview", icon: Hexagon },
   { to: `${BASE}/dashboard`, label: "Dashboard", icon: LayoutDashboard },
+  { to: `${BASE}/command-center`, label: "Command Center", icon: Gauge },
   { to: `${BASE}/ingest`, label: "Data Ingest", icon: UploadCloud },
   { to: `${BASE}/inventory`, label: "Tool Inventory", icon: ListTree },
   { to: `${BASE}/assessment`, label: "AI Assessment", icon: Sparkles },
@@ -38,7 +43,7 @@ export default function PortfolioRationalizationLayout({ children }: { children:
 function AppLayout({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const [hover, setHover] = useState(false);
-  const { tools, duplications } = useSession();
+  const { tools, duplications, ingestTools, setAssessment } = useSession();
 
   return (
     <div className="ptr-theme min-h-screen flex text-[var(--ptr-text)]">
@@ -103,6 +108,21 @@ function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1" />
 
           <div className="flex items-center gap-2 shrink-0">
+            {tools.length === 0 ? (
+              <LoadSampleButton className="!h-7 !px-2.5 !text-xs" />
+            ) : tools[0]?.id.startsWith("sample-") ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setAssessment(null);
+                  ingestTools([], [], [], null);
+                }}
+                className="inline-flex items-center h-7 px-2.5 rounded-md border border-[var(--ptr-border)] bg-white text-xs text-[var(--ptr-muted)] hover:text-[var(--ptr-red)] hover:border-[var(--ptr-red)]"
+                title="Remove the sample portfolio from this session"
+              >
+                Clear sample data
+              </button>
+            ) : null}
             <span
               className="hidden lg:inline-flex items-center h-7 px-2.5 rounded-full border border-[var(--ptr-border)] bg-[var(--ptr-background)] text-xs text-[var(--ptr-muted)]"
               title="Tools currently loaded in this session"
