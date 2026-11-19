@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { Card, Gauge, Pill, SeverityBadge, Sparkline } from "@/components/aiops/primitives";
 import { ConfidenceBar, HealthDot, SlaPill, StatusPill } from "@/components/aiops/charts";
 import { ProblemDrawer } from "@/components/aiops/problem-drawer";
@@ -46,6 +47,9 @@ export default function JourneysPage() {
           Service assurance viewed end to end, from the business service a customer buys down to the
           component carrying it.
         </p>
+          <Link href="/agents/aiops-sentry/console/tslm" className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-navy hover:underline">
+            Powered by the TSLM knowledge graph <ArrowRight className="w-3 h-3" />
+          </Link>
       </div>
 
       {/* Journey cards */}

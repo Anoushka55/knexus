@@ -18,6 +18,7 @@ import {
   Bell,
   ChevronDown,
   Presentation,
+  Share2,
 } from "lucide-react";
 import { SessionProvider, useSession } from "@/lib/aiops/session";
 import { kpis, scenarios } from "@/lib/aiops";
@@ -35,6 +36,7 @@ const nav = [
   { to: `${BASE}/similar`, label: "Remediation History", icon: History },
   { to: `${BASE}/agent`, label: "Operations Copilot", icon: Bot },
   { to: `${BASE}/reports`, label: "Reports & Insights", icon: FileBarChart },
+  { to: `${BASE}/tslm`, label: "TSLM Engine", icon: Share2 },
   { to: `${BASE}/settings`, label: "Settings", icon: Settings },
 ] as const;
 

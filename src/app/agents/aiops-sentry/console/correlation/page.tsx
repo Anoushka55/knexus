@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { Card, Pill, SeverityBadge } from "@/components/aiops/primitives";
 import { CorrelationChain, CorrelationFunnel } from "@/components/aiops/correlation-chain";
@@ -91,6 +92,9 @@ export default function CorrelationPage() {
             How many low-level signals become one understandable problem with a business impact and
             a next action.
           </p>
+          <Link href="/agents/aiops-sentry/console/tslm" className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-navy hover:underline">
+            Powered by the TSLM knowledge graph <ArrowRight className="w-3 h-3" />
+          </Link>
         </div>
         <div className="inline-flex items-center bg-background border border-border rounded-aiops-sm p-0.5">
           {correlated.map((p) => (
